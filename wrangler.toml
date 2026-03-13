@@ -12,6 +12,10 @@ compatibility_flags = ["nodejs_compat"]
 # All HTML, CSS, JS and assets are served as-is from Cloudflare's global CDN.
 [assets]
 directory = "."
+# Serve index.html for requests to "/"; add .html extension automatically
+html_handling = "auto-trailing-slash"
+# Return index.html for any unmatched route (SPA-style fallback)
+not_found_handling = "single-page-application"
 
 # ── Pages (static site) ──────────────────────────────────────
 # Framework preset: None
