@@ -2469,3 +2469,28 @@ hr.section-divider {
   font-size: 32px;
   margin-bottom: 10px;
 }
+
+/* ===============================
+   LOGOUT BUTTON
+=============================== */
+
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--danger);
+  font-family: var(--font-primary);
+  transition: background 0.15s;
+}
+
+.sidebar-logout-btn:hover {
+  background: #FEF0F0;
+}

@@ -207,7 +207,7 @@ compatibility with **Cloudflare Pages** (static delivery, no Node.js runtime on 
 ## 9. File Structure
 
 ```
-JdeskWorkspace-/
+WorkDesk/
 ├── DESIGN_SYSTEM.md        ← this file (design protection)
 ├── wrangler.toml           ← Cloudflare Workers/Pages config
 ├── _headers                ← Cloudflare Pages HTTP headers

@@ -26,8 +26,10 @@ async function ceoLogin() {
     }
 }
 
-// Shared logout handler
+// Shared logout handler — clears session data and redirects to login
 function logout() {
+    localStorage.removeItem('workdesk_token');
+    localStorage.removeItem('workdesk_display_name');
     localStorage.removeItem('session');
     window.location.href = 'login.html';
 }
