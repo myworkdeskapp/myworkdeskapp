@@ -11,7 +11,8 @@
     if (!el) return;
     var hour = new Date().getHours();
     var greeting = hour < 12 ? 'Good Morning' : (hour < 17 ? 'Good Afternoon' : 'Good Evening');
-    el.textContent = greeting + ', J. Dela Cruz! \uD83D\uDC4B';
+    var name = localStorage.getItem('jdesk_display_name') || 'J. Dela Cruz';
+    el.textContent = greeting + ', ' + name + '! \uD83D\uDC4B';
   }
 
   // ── Sidebar navigation ────────────────────────────────────
