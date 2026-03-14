@@ -285,7 +285,7 @@
           </svg>
           <span class="nav-label">Reports &amp; Analytics</span>
         </li>
-        <li role="listitem" data-tooltip="Settings">
+        <li role="listitem" onclick="window.location.href='settings.html'" data-tooltip="Settings">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
@@ -317,6 +317,12 @@
           />
         </div>
         <div class="topbar-actions">
+
+          <!-- Live Clock -->
+          <div class="live-clock-wrap" aria-live="polite">
+            <span id="liveClock" class="live-clock"></span>
+            <span id="liveDate" class="live-date"></span>
+          </div>
 
           <!-- Messages shortcut -->
           <button class="topbar-icon-btn" aria-label="Messages" onclick="window.location.href='messaging.html'" style="position:relative;">
@@ -410,12 +416,13 @@
             </div>
           </div>
 
-          <!-- Status -->
+          <!-- Status / AUX -->
           <div class="topbar-status-wrap" id="statusWrap">
-            <button class="status-badge" id="statusBadgeBtn" aria-label="Set your status" aria-expanded="false">
-              <span class="status-dot online" id="statusDot"></span>
-              <span id="statusLabel">Online</span>
+            <button class="status-badge" id="statusBadgeBtn" aria-label="Set your AUX status" aria-expanded="false">
+              <span class="status-dot offline" id="statusDot"></span>
+              <span id="statusLabel">Offline</span>
             </button>
+            <span class="aux-timer" id="auxTimer" title="Time in current status">0m</span>
             <div class="status-dropdown" id="statusDropdown" role="menu">
               <div class="status-dropdown-item" data-status="online" role="menuitem">
                 <span class="status-dot online"></span> Online
@@ -509,10 +516,26 @@
 
         </div>
 
-        <!-- ── ROW 2: Charts + Attendance ── -->
+        <!-- ── ROW 2: Calendar + Monthly Attendance ── -->
         <div class="grid mb-20">
 
-          <!-- Bar Chart — Monthly Attendance -->
+          <!-- Calendar (top position, beside monthly reports) -->
+          <div class="card" id="calendarCard">
+            <div class="card-header">
+              <span class="card-title" id="calMonthTitle">Loading…</span>
+              <div class="flex-center gap-8">
+                <button class="topbar-icon-btn" id="calPrevBtn" aria-label="Previous month">&#8249;</button>
+                <button class="topbar-icon-btn" id="calNextBtn" aria-label="Next month">&#8250;</button>
+              </div>
+            </div>
+            <div class="calendar-grid" id="calGrid"></div>
+            <hr class="section-divider" />
+            <div class="text-sm text-muted mt-8">
+              <span class="flex-center gap-8"><span style="color:var(--primary);font-weight:700;">●</span> Highlighted = company events</span>
+            </div>
+          </div>
+
+          <!-- Bar Chart — Monthly Attendance (spans 2 cols) -->
           <div class="card col-span-2">
             <div class="card-header">
               <span class="card-title">Monthly Attendance Overview</span>
@@ -534,7 +557,12 @@
             </div>
           </div>
 
-          <!-- Attendance Summary -->
+        </div>
+
+        <!-- ── ROW 3: Today's Summary + Employees + Activity (original graphs below calendar) ── -->
+        <div class="grid mb-20">
+
+          <!-- Attendance Summary (below calendar, original donut graph position) -->
           <div class="card">
             <div class="card-header">
               <span class="card-title">Today's Summary</span>
@@ -567,11 +595,6 @@
               <div class="attendance-bar"><div class="attendance-bar-fill" style="width:9%;background:var(--danger)"></div></div>
             </div>
           </div>
-
-        </div>
-
-        <!-- ── ROW 3: Employees + Tickets + Activity ── -->
-        <div class="grid mb-20">
 
           <!-- Recent Employees -->
           <div class="card">
@@ -614,43 +637,6 @@
             </div>
           </div>
 
-          <!-- Open Tickets -->
-          <div class="card">
-            <div class="card-header">
-              <span class="card-title">Support Tickets</span>
-              <span class="card-action" id="manageTicketsBtn" style="cursor:pointer;">Manage →</span>
-            </div>
-
-            <div class="ticket-item">
-              <div>
-                <div class="ticket-title">Payslip not generated — March</div>
-                <div class="ticket-meta">Maria Santos · 2 hrs ago</div>
-              </div>
-              <span class="ticket-status status-open">Open</span>
-            </div>
-            <div class="ticket-item">
-              <div>
-                <div class="ticket-title">Leave balance discrepancy</div>
-                <div class="ticket-meta">Jose Reyes · 5 hrs ago</div>
-              </div>
-              <span class="ticket-status status-pending">Pending</span>
-            </div>
-            <div class="ticket-item">
-              <div>
-                <div class="ticket-title">SSS/PhilHealth update request</div>
-                <div class="ticket-meta">Liza Cruz · Yesterday</div>
-              </div>
-              <span class="ticket-status status-resolved">Resolved</span>
-            </div>
-            <div class="ticket-item">
-              <div>
-                <div class="ticket-title">Overtime approval — Q1</div>
-                <div class="ticket-meta">Ben Mendoza · 2 days ago</div>
-              </div>
-              <span class="ticket-status status-open">Open</span>
-            </div>
-          </div>
-
           <!-- Activity Feed -->
           <div class="card">
             <div class="card-header">
@@ -689,9 +675,45 @@
 
         </div>
 
-        <!-- ── ROW 4: Notices + Quick Actions + Calendar ── -->
+        <!-- ── ROW 4: Tickets + Announcements + Quick Actions ── -->
         <div class="grid">
 
+          <!-- Open Tickets -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Support Tickets</span>
+              <span class="card-action" id="manageTicketsBtn" style="cursor:pointer;">Manage →</span>
+            </div>
+
+            <div class="ticket-item">
+              <div>
+                <div class="ticket-title">Payslip not generated — March</div>
+                <div class="ticket-meta">Maria Santos · 2 hrs ago</div>
+              </div>
+              <span class="ticket-status status-open">Open</span>
+            </div>
+            <div class="ticket-item">
+              <div>
+                <div class="ticket-title">Leave balance discrepancy</div>
+                <div class="ticket-meta">Jose Reyes · 5 hrs ago</div>
+              </div>
+              <span class="ticket-status status-pending">Pending</span>
+            </div>
+            <div class="ticket-item">
+              <div>
+                <div class="ticket-title">SSS/PhilHealth update request</div>
+                <div class="ticket-meta">Liza Cruz · Yesterday</div>
+              </div>
+              <span class="ticket-status status-resolved">Resolved</span>
+            </div>
+            <div class="ticket-item">
+              <div>
+                <div class="ticket-title">Overtime approval — Q1</div>
+                <div class="ticket-meta">Ben Mendoza · 2 days ago</div>
+              </div>
+              <span class="ticket-status status-open">Open</span>
+            </div>
+          </div>
           <!-- Announcements -->
           <div class="card">
             <div class="card-header">
@@ -754,22 +776,6 @@
             </div>
           </div>
 
-          <!-- Calendar -->
-          <div class="card" id="calendarCard">
-            <div class="card-header">
-              <span class="card-title" id="calMonthTitle">Loading…</span>
-              <div class="flex-center gap-8">
-                <button class="topbar-icon-btn" id="calPrevBtn" aria-label="Previous month">&#8249;</button>
-                <button class="topbar-icon-btn" id="calNextBtn" aria-label="Next month">&#8250;</button>
-              </div>
-            </div>
-            <div class="calendar-grid" id="calGrid"></div>
-            <hr class="section-divider" />
-            <div class="text-sm text-muted mt-8">
-              <span class="flex-center gap-8"><span style="color:var(--primary);font-weight:700;">●</span> Highlighted = company events</span>
-            </div>
-          </div>
-
         </div>
         <!-- end last row -->
 
@@ -786,12 +792,79 @@
 (function(){
   'use strict';
   var MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DAYS_SHORT  = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   var DAY_LABELS = ['Su','Mo','Tu','We','Th','Fr','Sa'];
   var today = new Date();
   var calYear = today.getFullYear();
   var calMonth = today.getMonth();
   // Demo events: day numbers (1-based) for the current month
   var events = [6, 20];
+
+  // ── Live Clock ────────────────────────────────────────────
+  var auxStatusStart = Date.now();
+
+  function updateClock() {
+    var now = new Date();
+    var clockEl = document.getElementById('liveClock');
+    var dateEl  = document.getElementById('liveDate');
+    if (!clockEl) return;
+    // Read time format preference (12h or 24h) from localStorage
+    var fmt = localStorage.getItem('workdesk_time_format') || '12h';
+    var h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+    var timeStr;
+    if (fmt === '24h') {
+      timeStr = pad(h) + ':' + pad(m) + ':' + pad(s);
+    } else {
+      var ampm = h >= 12 ? 'PM' : 'AM';
+      var h12  = h % 12 || 12;
+      timeStr  = h12 + ':' + pad(m) + ':' + pad(s) + ' ' + ampm;
+    }
+    clockEl.textContent = timeStr;
+    if (dateEl) {
+      dateEl.textContent = DAYS_SHORT[now.getDay()] + ', ' + MONTHS_LONG[now.getMonth()].slice(0,3) + ' ' + now.getDate();
+    }
+    // Update AUX timer
+    updateAuxTimer();
+  }
+
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+
+  // ── AUX / Status timer ────────────────────────────────────
+  function updateAuxTimer() {
+    var el = document.getElementById('auxTimer');
+    if (!el) return;
+    var elapsed = Math.floor((Date.now() - auxStatusStart) / 1000);
+    var h = Math.floor(elapsed / 3600);
+    var m = Math.floor((elapsed % 3600) / 60);
+    var s = elapsed % 60;
+    if (h > 0) {
+      el.textContent = h + 'h ' + m + 'm';
+    } else if (m > 0) {
+      el.textContent = m + 'm ' + s + 's';
+    } else {
+      el.textContent = s + 's';
+    }
+  }
+
+  function logAuxChange(status) {
+    // Record AUX status change to localStorage (attendance footprint)
+    var logs = JSON.parse(localStorage.getItem('workdesk_aux_log') || '[]');
+    var now = new Date();
+    // Close out the previous entry with an endTime
+    if (logs.length > 0 && !logs[logs.length - 1].endTime) {
+      logs[logs.length - 1].endTime = now.toISOString();
+    }
+    logs.push({
+      status: status,
+      startTime: now.toISOString(),
+      endTime: null,
+      employee: localStorage.getItem('workdesk_display_name') || 'Unknown'
+    });
+    // Keep last 200 entries
+    if (logs.length > 200) logs = logs.slice(-200);
+    localStorage.setItem('workdesk_aux_log', JSON.stringify(logs));
+    auxStatusStart = Date.now();
+  }
 
   function renderCalendar() {
     var titleEl = document.getElementById('calMonthTitle');
@@ -829,6 +902,10 @@
 
   document.addEventListener('DOMContentLoaded', function(){
     renderCalendar();
+    // Start live clock
+    updateClock();
+    setInterval(updateClock, 1000);
+
     var prev = document.getElementById('calPrevBtn');
     var next = document.getElementById('calNextBtn');
     if (prev) prev.addEventListener('click', function(){
@@ -840,7 +917,7 @@
       renderCalendar();
     });
 
-    // Status widget
+    // AUX / Status widget — defaults to Offline, requires manual activation
     var statusBtn  = document.getElementById('statusBadgeBtn');
     var statusDrop = document.getElementById('statusDropdown');
     var statusDot  = document.getElementById('statusDot');
@@ -859,6 +936,7 @@
           statusLbl.textContent = item.textContent.trim();
           statusDrop.classList.remove('open');
           statusBtn.setAttribute('aria-expanded','false');
+          logAuxChange(s);
         });
       });
     }

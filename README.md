@@ -16,14 +16,17 @@
    - [Payroll](#6-payroll)
    - [Messaging](#7-messaging)
    - [Timeline](#8-timeline--announcements)
-3. [Tech Stack](#tech-stack)
-4. [Project Structure](#project-structure)
-5. [Deployment](#deployment)
-6. [API Endpoints](#api-endpoints)
-7. [Design System](#design-system)
-8. [Getting Started (Local Preview)](#getting-started-local-preview)
-9. [Guidelines & Conventions](#guidelines--conventions)
-10. [License](#license)
+   - [Settings](#9-settings)
+3. [Roles & Career Levels](#roles--career-levels)
+4. [Access & Permissions](#access--permissions)
+5. [Tech Stack](#tech-stack)
+6. [Project Structure](#project-structure)
+7. [Deployment](#deployment)
+8. [API Endpoints](#api-endpoints)
+9. [Design System](#design-system)
+10. [Getting Started (Local Preview)](#getting-started-local-preview)
+11. [Guidelines & Conventions](#guidelines--conventions)
+12. [License](#license)
 
 ---
 
@@ -71,13 +74,14 @@ The central hub of WorkDesk. Displays a real-time snapshot of the organization.
 |---|---|
 | Greeting Banner | Time-aware greeting ("Good Morning / Afternoon / Evening") with current user name |
 | Stat Cards | Total Employees, Attendance Today, Leave Requests, Payroll Summary |
+| Calendar | Mini calendar widget at the top beside the Monthly Attendance chart, with month navigation |
+| Monthly Attendance Chart | Bar chart spanning alongside the calendar, showing monthly attendance overview |
+| Today's Summary | Donut chart with attendance breakdown (Present / Late / Absent) — positioned below the calendar |
 | Quick Actions | Post Announcement, Create Ticket shortcuts |
-| Bar Chart | Attendance trend visualization |
-| Donut Chart | Employee distribution by department/role |
 | Activity Timeline | Recent HR activity feed |
-| Calendar | Mini calendar widget with month navigation |
 | Notification Bell | Dropdown with unread notifications (leave, attendance, payroll, employee alerts) |
-| Status Badge | Set your availability (Online / Away / Busy / Offline) |
+| Live Clock | Real-time clock (12h/24h based on platform setting) with date, shown in the topbar beside the AUX status |
+| AUX / Status Badge | Set availability manually (defaults to **Offline** on login). Time in current status is tracked and displayed. Every change is logged as an attendance footprint. |
 | Messages Shortcut | Top-bar icon linking directly to Messaging |
 
 **Sidebar Navigation:**
@@ -92,7 +96,7 @@ The central hub of WorkDesk. Displays a real-time snapshot of the organization.
 | Messages | `messaging.html` |
 | Timeline | `timeline.html` |
 | Ticketing | *(coming soon)* |
-| Settings | *(coming soon)* |
+| Settings | `settings.html` |
 | **Log Out** | Returns to `login.html` |
 
 ---
@@ -211,7 +215,103 @@ Company-wide announcement feed with role-based posting.
 
 ---
 
-## Tech Stack
+### 9. Settings
+
+**Page:** `settings.html`
+
+Central configuration hub for profiles, roles, permissions, and organization settings.
+
+| Section | Access | Description |
+|---|---|---|
+| Profile Settings | All users | Update display name, email, position, department, password |
+| Roles & Career Levels | All users (view) | Reference guide for the 5 organizational roles and 8 career levels |
+| Access & Permissions | Manager+ (edit) | Role-based permission matrix; approval chain documentation |
+| Organization Settings | Admin+ | Org name, industry, size, timezone, country; manage Admin users |
+| Platform Settings | Admin+ | Time format (12h/24h), date format, currency, work week start, notifications, audit footprints |
+
+**Super Admin exclusive features** (Platform Settings tab):
+- Create a new Organization
+- Modify or deactivate Organizations
+- Add / remove Organization Admin access
+
+---
+
+## Roles & Career Levels
+
+WorkDesk uses a two-axis access model: **Roles** define what a user can do; **Career Levels** indicate seniority.
+
+### Organizational Roles
+
+| Role | Level | Description |
+|---|---|---|
+| **Entry Level** (Role 1) | Career L1–3 | Front-line staff. Can view and submit requests; all modifications require Supervisor approval. |
+| **Supervisor** (Role 2) | Career L3–4 | Approves Entry Level requests. Limited edit access; self-modifications need Manager approval. |
+| **Manager** (Role 3) | Career L5–6 | Full team management. Approves Supervisor-escalated requests. Self-modifications need Senior Manager approval. |
+| **Senior Manager** (Role 4) | Career L6–7 | Cross-team oversight. Approves Manager requests. System-level changes require General Manager sign-off. |
+| **General Manager** (Role 5) | Career L7–8 | Organization-wide authority. Final approver within the org. Can delegate Admin functions. |
+| **Organization Admin** | — | Manages all org settings, user roles, and configurations. Assigned only by Super Admin. |
+| **Super Admin** | — | Platform-level control (CEO / Platform Owner). Can create/modify/remove organizations and assign Org Admins. |
+
+### Career Levels (1–8)
+
+Career levels measure seniority and growth within a role track. They determine the scope of access but are always evaluated together with the employee's Role for final permission decisions.
+
+| Level | Name | Typical Titles | Role Mapping |
+|---|---|---|---|
+| **L1** | Entry | Associates, Assistants, Trainees | Role 1 |
+| **L2** | Junior | Coordinators, Junior Specialists | Role 1–2 |
+| **L3** | Associate | Specialists, Analysts | Role 2 |
+| **L4** | Mid-Level | Senior Specialists, Team Leads | Role 2–3 |
+| **L5** | Senior | Senior Analysts, Supervisors | Role 3 |
+| **L6** | Lead | Managers, Department Heads | Role 3–4 |
+| **L7** | Principal | Senior Managers, Directors | Role 4–5 |
+| **L8** | Executive | General Managers, VPs, C-Suite | Role 5+ |
+
+---
+
+## Access & Permissions
+
+Permissions are derived from each employee's Role. All modifications flow through an approval chain. Changes are recorded as **immutable audit footprints** visible only to Manager-level users and above. Employees below the visibility threshold receive a notification/disclaimer that a change occurred, but cannot see the change detail.
+
+### Approval Chain
+
+```
+Entry Level → Supervisor → Manager → Senior Manager → General Manager → Admin → Super Admin
+```
+
+Each level may approve requests from the level directly below it. Managers and above require approval from their own next level for self-modifications.
+
+### Attendance Records & AUX Status
+
+- AUX (availability) status **must be set manually** after login — it defaults to **Offline**.
+- Every AUX status change is timestamped and recorded in the employee's attendance log.
+- Attendance records are **immutable**. Any correction requires:
+  1. A written explanation from the employee
+  2. A supporting attachment (screenshot, email, etc.)
+  3. Approval from the next-level manager
+- Correction requests from Managers require approval from Senior Managers; Senior Managers require General Manager approval.
+
+### Permission Summary
+
+| Module / Action | Entry (L1–3) | Supervisor (L4) | Manager (L5–6) | Sr. Manager (L7) | GM / Admin (L8) |
+|---|---|---|---|---|---|
+| Dashboard — View | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Employees — View | Own only | ✅ | ✅ | ✅ | ✅ |
+| Employees — Edit | ❌ | Requires approval | ✅ | ✅ | ✅ |
+| Attendance — View own | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Attendance — Request correction | Requires approval | Requires approval | Requires approval | Requires approval | ✅ |
+| Attendance — Approve correction | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Leave — File request | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Leave — Approve | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Payroll — View own payslip | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Payroll — Edit / Process | ❌ | Requires approval | Requires approval | ✅ | ✅ |
+| Settings — Profile | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Settings — Roles & Permissions | ❌ | ❌ | View only | ✅ | ✅ |
+| Settings — Organization | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Audit Footprints — View | ❌ | Own only | ✅ | ✅ | ✅ |
+| Organizations — Create / Delete | ❌ | ❌ | ❌ | ❌ | ⭐ Super Admin only |
+
+---
 
 | Layer | Technology |
 |---|---|
@@ -245,6 +345,7 @@ WorkDesk/
 ├── payroll.html                       ← Payroll overview
 ├── messaging.html                     ← Internal messaging
 ├── timeline.html                      ← Announcement feed
+├── settings.html                      ← Settings (profile, roles, permissions, org, platform)
 ├── auth.js                            ← Shared auth helpers (login/logout)
 ├── Baground theme login page .png     ← Login background image
 ├── assets/
