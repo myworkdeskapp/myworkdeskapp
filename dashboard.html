@@ -216,31 +216,31 @@
       <!-- Main Menu -->
       <span class="sidebar-section-label">Main</span>
       <ul class="sidebar-menu" role="list">
-        <li class="active" role="listitem">
+        <li class="active" role="listitem" onclick="window.location.href='dashboard.html'">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
           </svg>
           Dashboard
         </li>
-        <li role="listitem">
+        <li role="listitem" onclick="window.location.href='employees.html'">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
           </svg>
           Employees
         </li>
-        <li role="listitem">
+        <li role="listitem" onclick="window.location.href='attendance.html'">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
           Attendance
         </li>
-        <li role="listitem">
+        <li role="listitem" onclick="window.location.href='leave.html'">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
           </svg>
           Leave Management
         </li>
-        <li role="listitem">
+        <li role="listitem" onclick="window.location.href='payroll.html'">
           <svg class="menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
           </svg>
@@ -418,7 +418,7 @@
           <div class="card col-span-2">
             <div class="card-header">
               <span class="card-title">Monthly Attendance Overview</span>
-              <span class="card-action">View Report →</span>
+              <span class="card-action" onclick="window.location.href='attendance.html'" style="cursor:pointer;">View Report →</span>
             </div>
             <div class="bar-chart" aria-label="Monthly attendance bar chart">
               <div class="bar-group"><div class="bar" style="height:90px"></div><div class="bar-label">Jan</div></div>
@@ -440,7 +440,7 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">Today's Summary</span>
-              <span class="card-action">Details</span>
+              <span class="card-action" onclick="window.location.href='attendance.html'" style="cursor:pointer;">Details</span>
             </div>
 
             <div class="flex-center gap-12 mb-16" style="justify-content:center;">
@@ -479,7 +479,7 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">New Employees</span>
-              <span class="card-action">View All →</span>
+              <span class="card-action" onclick="window.location.href='employees.html'" style="cursor:pointer;">View All →</span>
             </div>
 
             <div class="employee-card">
@@ -520,7 +520,7 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">Support Tickets</span>
-              <span class="card-action">Manage →</span>
+              <span class="card-action" id="manageTicketsBtn" style="cursor:pointer;">Manage →</span>
             </div>
 
             <div class="ticket-item">
@@ -598,7 +598,7 @@
           <div class="card">
             <div class="card-header">
               <span class="card-title">Announcements</span>
-              <button class="btn btn-soft btn-sm">+ Post</button>
+              <button class="btn btn-soft btn-sm" id="postAnnouncementBtn">+ Post</button>
             </div>
 
             <div class="notice">
@@ -621,35 +621,35 @@
               <span class="card-title">Quick Actions</span>
             </div>
             <div class="grid-4" style="gap:12px;">
-              <div class="quick-action">
+              <div class="quick-action" data-action="leave">
                 <div class="qa-icon">📋</div>
                 File Leave
               </div>
-              <div class="quick-action">
+              <div class="quick-action" data-action="ticket">
                 <div class="qa-icon">🎫</div>
                 New Ticket
               </div>
-              <div class="quick-action">
+              <div class="quick-action" data-action="employee">
                 <div class="qa-icon">👤</div>
                 Add Employee
               </div>
-              <div class="quick-action">
+              <div class="quick-action" data-action="payroll">
                 <div class="qa-icon">💰</div>
                 Run Payroll
               </div>
-              <div class="quick-action">
+              <div class="quick-action" data-action="reports">
                 <div class="qa-icon">📊</div>
                 View Reports
               </div>
-              <div class="quick-action">
+              <div class="quick-action" data-action="settings">
                 <div class="qa-icon">⚙️</div>
                 Settings
               </div>
-              <div class="quick-action">
+              <div class="quick-action" data-action="messages">
                 <div class="qa-icon">📩</div>
                 Broadcast
               </div>
-              <div class="quick-action">
+              <div class="quick-action" data-action="alerts">
                 <div class="qa-icon">🔔</div>
                 Alerts
               </div>

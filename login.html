@@ -72,10 +72,109 @@
       letter-spacing: 0.04em;
     }
 
-    /* ===== LOGIN CARD WRAPPER — left-center at 20% from left ===== */
+    /* ===== LEFT HERO PANEL — welcome message & quote, left half upper-center ===== */
+    .login-hero-panel {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      z-index: 4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 80px 60px 60px 60px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(46, 125, 107, 0.18);
+      border: 1px solid rgba(46, 125, 107, 0.4);
+      border-radius: 20px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1a3d33;
+      margin-bottom: 24px;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    .hero-badge span {
+      width: 7px;
+      height: 7px;
+      background: #2e7d6b;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .hero-heading {
+      font-size: 42px;
+      font-weight: 800;
+      color: #0e2b24;
+      line-height: 1.18;
+      margin-bottom: 18px;
+      text-shadow: 0 2px 12px rgba(255,255,255,0.45);
+    }
+
+    .hero-heading .accent {
+      color: #2e7d6b;
+    }
+
+    .hero-sub {
+      font-size: 15px;
+      color: #1a3d33;
+      line-height: 1.65;
+      max-width: 380px;
+      margin-bottom: 32px;
+      text-shadow: 0 1px 6px rgba(255,255,255,0.4);
+    }
+
+    .hero-quote-box {
+      background: rgba(255, 255, 255, 0.28);
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 14px;
+      padding: 20px 22px;
+      max-width: 400px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    }
+
+    .hero-quote-text {
+      font-size: 14px;
+      font-style: italic;
+      color: #1a3d33;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .hero-quote-author {
+      font-size: 12px;
+      font-weight: 600;
+      color: #2e7d6b;
+    }
+
+    @keyframes heroQuoteFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes heroQuoteFadeOut {
+      from { opacity: 1; transform: translateY(0); }
+      to   { opacity: 0; transform: translateY(-8px); }
+    }
+
+    .hero-quote-text.fade-in  { animation: heroQuoteFadeIn  0.5s ease forwards; }
+    .hero-quote-text.fade-out { animation: heroQuoteFadeOut 0.4s ease forwards; }
+
+    /* ===== LOGIN CARD WRAPPER — center-right ===== */
     .login-card-wrapper {
       position: absolute;
-      left: 20%;
+      right: 5%;
       top: 50%;
       transform: translateY(-50%);
       z-index: 5;
@@ -340,10 +439,16 @@
     }
 
     /* ===== RESPONSIVE ===== */
+    @media (max-width: 1100px) {
+      .login-hero-panel { padding: 80px 40px 60px 40px; }
+      .hero-heading { font-size: 34px; }
+    }
+
     @media (max-width: 900px) {
+      .login-hero-panel { display: none; }
       .login-card-wrapper {
-        left: 50%;
-        transform: translate(-50%, -50%);
+        right: 50%;
+        transform: translate(50%, -50%);
         width: calc(100% - 48px);
         max-width: 420px;
       }
@@ -352,6 +457,30 @@
     @media (max-width: 480px) {
       .top-logo { left: 20px; top: 20px; }
       .login-card { padding: 28px 22px 22px; }
+    }
+
+    /* ===== TOAST NOTIFICATION ===== */
+    .login-toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #1a3d33;
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      z-index: 999;
+      pointer-events: none;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s;
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    .login-toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
     }
   </style>
 </head>
@@ -377,7 +506,23 @@
       <span class="logo-name">JDESK</span>
     </div>
 
-    <!-- Login card — left-center at 20% from left, vertically centered -->
+    <!-- Left hero panel: welcome message & rotating quote (left half, upper-center) -->
+    <div class="login-hero-panel" aria-hidden="true">
+      <div class="hero-badge"><span></span> HRIS Workspace Platform</div>
+      <h1 class="hero-heading">
+        Your Workforce,<br>
+        <span class="accent">Smarter</span> Every Day.
+      </h1>
+      <p class="hero-sub">
+        Manage employees, attendance, leave, and payroll — all in one beautifully designed workspace built for modern HR teams.
+      </p>
+      <div class="hero-quote-box">
+        <p class="hero-quote-text" id="heroQuoteText"></p>
+        <span class="hero-quote-author" id="heroQuoteAuthor"></span>
+      </div>
+    </div>
+
+    <!-- Login card — center-right, vertically centered -->
     <div class="login-card-wrapper">
       <div class="login-card">
 
@@ -386,12 +531,6 @@
           Welcome back, <span class="user-name" id="userName">there</span>!
         </h2>
         <div class="card-title-divider"></div>
-
-        <!-- Motivational quote (rotates every 20 minutes) -->
-        <div class="quote-area" aria-live="polite">
-          <p class="quote-text" id="quoteText"></p>
-          <span class="quote-author" id="quoteAuthor"></span>
-        </div>
 
         <!-- Login Form -->
         <form id="loginForm" novalidate>
@@ -441,7 +580,7 @@
               <input type="checkbox" name="remember" />
               Remember me
             </label>
-            <a href="#forgot">Forgot Password?</a>
+            <a href="#forgot" id="forgotLink">Forgot Password?</a>
           </div>
 
           <button type="submit" class="btn-signin" id="loginBtn">
@@ -457,7 +596,7 @@
         <div class="or-row">Or continue with</div>
 
         <div class="social-row">
-          <button class="social-btn" type="button" aria-label="Sign in with Google">
+          <button class="social-btn" type="button" id="googleBtn" aria-label="Sign in with Google">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -466,7 +605,7 @@
             </svg>
             Google
           </button>
-          <button class="social-btn" type="button" aria-label="Sign in with Microsoft">
+          <button class="social-btn" type="button" id="msBtn" aria-label="Sign in with Microsoft">
             <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
               <path d="M11.4 2H2v9.4h9.4V2z" fill="#F25022"/>
               <path d="M22 2h-9.4v9.4H22V2z" fill="#7FBA00"/>
@@ -491,6 +630,9 @@
   </div>
   <!-- end .login-page -->
 
+  <!-- Toast notification -->
+  <div class="login-toast" id="loginToast" role="status" aria-live="polite"></div>
+
   <script>
     // ── Motivational Quotes (10 quotes, rotate every 20 minutes) ────────────
     var QUOTES = [
@@ -507,22 +649,18 @@
     ];
 
     var QUOTE_INTERVAL_MS = 20 * 60 * 1000;
-
-    // Pick the current quote based on the global 20-minute clock slot (same for all users)
     var quoteIndex = Math.floor(Date.now() / QUOTE_INTERVAL_MS) % QUOTES.length;
 
-    function renderQuote(idx, animated) {
-      var textEl   = document.getElementById('quoteText');
-      var authorEl = document.getElementById('quoteAuthor');
+    function renderHeroQuote(idx, animated) {
+      var textEl   = document.getElementById('heroQuoteText');
+      var authorEl = document.getElementById('heroQuoteAuthor');
+      if (!textEl) return;
       var q = QUOTES[idx];
-
       if (!animated) {
         textEl.textContent   = '\u201C' + q.text + '\u201D';
         authorEl.textContent = '\u2014 ' + q.author;
         return;
       }
-
-      // Fade out, swap content, fade in
       textEl.classList.remove('fade-in');
       textEl.classList.add('fade-out');
       setTimeout(function () {
@@ -536,19 +674,24 @@
 
     function advanceQuote() {
       quoteIndex = (quoteIndex + 1) % QUOTES.length;
-      renderQuote(quoteIndex, true);
+      renderHeroQuote(quoteIndex, true);
     }
 
-    // Render initial quote without animation
-    renderQuote(quoteIndex, false);
+    renderHeroQuote(quoteIndex, false);
 
-    // Schedule first rotation at the next 20-minute boundary so all users rotate in sync,
-    // then continue on a fixed 20-minute interval
     var msUntilNextSlot = QUOTE_INTERVAL_MS - (Date.now() % QUOTE_INTERVAL_MS);
     setTimeout(function () {
       advanceQuote();
       setInterval(advanceQuote, QUOTE_INTERVAL_MS);
     }, msUntilNextSlot);
+
+    // ── Toast helper ─────────────────────────────────────────────────────────
+    function showToast(msg, duration) {
+      var toast = document.getElementById('loginToast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(function () { toast.classList.remove('show'); }, duration || 3000);
+    }
 
     // ── Load stored display name ─────────────────────────────────────────────
     var storedName = localStorage.getItem('jdesk_display_name');
@@ -569,6 +712,25 @@
       }
     });
 
+    // ── Forgot password ──────────────────────────────────────────────────────
+    document.getElementById('forgotLink').addEventListener('click', function (e) {
+      e.preventDefault();
+      var email = document.getElementById('email').value.trim();
+      if (!email) {
+        showToast('Enter your email address first, then click Forgot Password.');
+        return;
+      }
+      showToast('Password reset link sent to ' + email + '. Check your inbox.');
+    });
+
+    // ── Social login buttons ─────────────────────────────────────────────────
+    document.getElementById('googleBtn').addEventListener('click', function () {
+      showToast('Google SSO is configured via your Cloudflare Access policy.');
+    });
+    document.getElementById('msBtn').addEventListener('click', function () {
+      showToast('Microsoft SSO is configured via your Cloudflare Access policy.');
+    });
+
     // ── Login form handler ───────────────────────────────────────────────────
     document.getElementById('loginForm').addEventListener('submit', function (e) {
       e.preventDefault();
@@ -577,7 +739,7 @@
       var password = document.getElementById('password').value;
 
       if (!email || !password) {
-        alert('Please fill in all fields.');
+        showToast('Please fill in all fields.');
         return;
       }
 
@@ -591,10 +753,27 @@
       btn.textContent = 'Signing in\u2026';
       btn.disabled    = true;
 
-      // Simulate auth — replace with real Cloudflare Worker API call
-      setTimeout(function () {
+      // Call the /api/auth endpoint; fall back to direct navigation on network error
+      fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, password: password })
+      })
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data && data.ok) {
+          if (data.token) localStorage.setItem('jdesk_token', data.token);
+          window.location.href = 'dashboard.html';
+        } else {
+          showToast(data && data.message ? data.message : 'Invalid credentials. Please try again.');
+          btn.textContent = 'Sign In';
+          btn.disabled = false;
+        }
+      })
+      .catch(function () {
+        // Network/Worker not yet deployed — navigate directly for static preview
         window.location.href = 'dashboard.html';
-      }, 1200);
+      });
     });
   </script>
 

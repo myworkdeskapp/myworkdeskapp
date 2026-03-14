@@ -13,19 +13,24 @@
     var greeting = hour < 12 ? 'Good Morning' : (hour < 17 ? 'Good Afternoon' : 'Good Evening');
     var name = localStorage.getItem('jdesk_display_name') || 'J. Dela Cruz';
     el.textContent = greeting + ', ' + name + '! \uD83D\uDC4B';
+    // Update avatar initials
+    var initials = name.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
+    var avatarEls = document.querySelectorAll('.greeting-avatar, [id="topbarAvatar"]');
+    avatarEls.forEach(function (el) { el.textContent = initials; });
+    var greetingAvatar = document.querySelector('.greeting-avatar');
+    if (greetingAvatar) greetingAvatar.textContent = initials;
+    var sidebarAvatar = document.querySelector('.sidebar-footer .employee-avatar');
+    if (sidebarAvatar) {
+      sidebarAvatar.textContent = initials;
+      var nameEl = sidebarAvatar.nextElementSibling;
+      if (nameEl) nameEl.querySelector('div').textContent = name;
+    }
   }
 
   // ── Sidebar navigation ────────────────────────────────────
   function initSidebarNav() {
     var items = document.querySelectorAll('.sidebar-menu li');
     items.forEach(function (item) {
-      item.addEventListener('click', function () {
-        // Only toggle active for items without onclick (not navigation links)
-        if (!item.getAttribute('onclick')) {
-          items.forEach(function (i) { i.classList.remove('active'); });
-          item.classList.add('active');
-        }
-      });
       item.addEventListener('keydown', function (e) {
         if (e.key === 'Enter' || e.key === ' ') {
           item.click();
@@ -34,21 +39,80 @@
     });
   }
 
+  // ── Toast notification ────────────────────────────────────
+  function showToast(msg) {
+    var existing = document.getElementById('dashToast');
+    if (!existing) {
+      existing = document.createElement('div');
+      existing.id = 'dashToast';
+      existing.style.cssText = 'position:fixed;bottom:24px;right:24px;background:#1F2933;color:#fff;padding:12px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:999;pointer-events:none;opacity:0;transform:translateY(12px);transition:opacity .3s,transform .3s;';
+      document.body.appendChild(existing);
+    }
+    existing.textContent = msg;
+    existing.style.opacity = '1';
+    existing.style.transform = 'translateY(0)';
+    setTimeout(function () {
+      existing.style.opacity = '0';
+      existing.style.transform = 'translateY(12px)';
+    }, 3000);
+  }
+
   // ── Quick Actions ─────────────────────────────────────────
   function initQuickActions() {
     var actions = document.querySelectorAll('.quick-action');
     actions.forEach(function (action) {
+      action.setAttribute('role', 'button');
+      action.setAttribute('tabindex', '0');
+      action.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') action.click();
+      });
       action.addEventListener('click', function () {
-        var label = action.querySelector('div:last-child');
-        if (label) {
-          var name = label.textContent.trim();
-          // Route to relevant page/section
-          if (name === 'Messages' || name === 'Broadcast') {
-            window.location.href = 'messaging.html';
-          } else {
-            console.info('[JDesk] Quick action:', name);
-          }
+        var key = action.dataset.action;
+        switch (key) {
+          case 'leave':     window.location.href = 'leave.html'; break;
+          case 'ticket':    showToast('Ticketing module coming soon. Check Support → Ticketing.'); break;
+          case 'employee':  window.location.href = 'employees.html'; break;
+          case 'payroll':   window.location.href = 'payroll.html'; break;
+          case 'reports':   window.location.href = 'employees.html'; break;
+          case 'settings':  showToast('Settings panel coming soon.'); break;
+          case 'messages':  window.location.href = 'messaging.html'; break;
+          case 'alerts':    showToast('No new alerts at this time.'); break;
+          default:          showToast('Opening ' + (action.textContent.trim()) + '…'); break;
         }
+      });
+    });
+  }
+
+  // ── Card action buttons ───────────────────────────────────
+  function initCardActions() {
+    var postBtn = document.getElementById('postAnnouncementBtn');
+    if (postBtn) {
+      postBtn.addEventListener('click', function () {
+        var msg = prompt('Enter announcement message:');
+        if (msg && msg.trim()) {
+          var card = postBtn.closest('.card');
+          var notice = document.createElement('div');
+          notice.className = 'notice';
+          notice.innerHTML = '<div class="notice-title">📢 New Announcement</div>' + msg.trim();
+          card.appendChild(notice);
+          showToast('Announcement posted.');
+        }
+      });
+    }
+
+    var ticketsBtn = document.getElementById('manageTicketsBtn');
+    if (ticketsBtn) {
+      ticketsBtn.addEventListener('click', function () {
+        showToast('Ticketing module — coming soon.');
+      });
+    }
+
+    // Ticket status row clicks
+    document.querySelectorAll('.ticket-item').forEach(function (item) {
+      item.style.cursor = 'pointer';
+      item.addEventListener('click', function () {
+        var title = item.querySelector('.ticket-title');
+        if (title) showToast('Viewing ticket: ' + title.textContent.trim());
       });
     });
   }
@@ -65,7 +129,6 @@
       function step(ts) {
         if (!startTime) startTime = ts;
         var progress = Math.min((ts - startTime) / duration, 1);
-        // Ease-out
         var eased = 1 - Math.pow(1 - progress, 3);
         el.textContent = Math.floor(eased * target);
         if (progress < 1) {
@@ -96,6 +159,7 @@
     setGreeting();
     initSidebarNav();
     initQuickActions();
+    initCardActions();
     animateStatNumbers();
     animateAttendanceBars();
   });
