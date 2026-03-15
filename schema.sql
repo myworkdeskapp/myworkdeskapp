@@ -22,7 +22,8 @@ CREATE TABLE IF NOT EXISTS organizations (
 -- ── Users ──────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS users (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,
-  org_id          INTEGER NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+  org_id          INTEGER REFERENCES organizations(id) ON DELETE CASCADE,
+  -- org_id is NULL for platform-level roles (superadmin) that span all organisations
   email           TEXT    NOT NULL UNIQUE,
   password_hash   TEXT    NOT NULL,
   display_name    TEXT    NOT NULL,

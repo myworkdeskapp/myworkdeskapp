@@ -19,8 +19,8 @@ VALUES
 -- Passwords: these are placeholder hashes (replace before production)
 INSERT INTO users (id, org_id, email, password_hash, display_name, role, department, position, status, created_at)
 VALUES
-  -- Platform Super Admin (no org affiliation)
-  (1, 1, 'superadmin@workdesk.com', 'PLACEHOLDER_HASH', 'Super Admin',    'superadmin', NULL,          NULL,               'active', '2024-01-01 00:00:00'),
+  -- Platform Super Admin (no org affiliation — org_id is NULL)
+  (1, NULL, 'superadmin@workdesk.com', 'PLACEHOLDER_HASH', 'Super Admin',    'superadmin', NULL,          NULL,               'active', '2024-01-01 00:00:00'),
   -- Acme Corporation
   (2, 1, 'admin@acme.com',          'PLACEHOLDER_HASH', 'HR Admin',       'admin',      'HR',          'HR Manager',        'active', '2024-01-15 08:00:00'),
   (3, 1, 'jdoe@acme.com',           'PLACEHOLDER_HASH', 'John Doe',       'employee',   'Engineering', 'Software Engineer', 'active', '2024-01-15 08:30:00'),

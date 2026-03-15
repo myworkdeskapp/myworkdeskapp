@@ -608,7 +608,7 @@ database_id   = "&lt;YOUR_D1_DATABASE_ID&gt;"</div>
 
   function fmtDate(str) {
     if (!str) return '—';
-    try { return new Date(str).toLocaleDateString('en-PH', { year:'numeric', month:'short', day:'numeric' }); } catch { return str; }
+    try { return new Date(str).toLocaleDateString('en-PH', { year:'numeric', month:'short', day:'numeric' }); } catch (_e) { return str; }
   }
 
   function renderTable() {

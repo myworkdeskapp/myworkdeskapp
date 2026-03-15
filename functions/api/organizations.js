@@ -19,14 +19,36 @@ function json(data, status = 200) {
   return new Response(JSON.stringify(data), { status, headers: CORS });
 }
 
-// ── Minimal token decode (matches the signing scheme in auth.js) ─────────────
-function decodeToken(token) {
+// ── Token verification — mirrors the signing logic in auth.js ────────────────
+// Verifies the HMAC-SHA256 signature on the token before trusting any payload
+// claim (including the role).  Returns { email, role } or null on failure.
+async function verifyToken(token, secret) {
   try {
-    const [payloadB64] = token.split('.');
-    const payload = atob(payloadB64);          // "email:role:timestamp"
-    const parts   = payload.split(':');
+    const dotIndex = token.lastIndexOf('.');
+    if (dotIndex < 0) return null;
+    const payloadB64 = token.slice(0, dotIndex);
+    const sigB64     = token.slice(dotIndex + 1);
+    const payload    = atob(payloadB64);               // "email:role:timestamp"
+
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey(
+      'raw', enc.encode(secret),
+      { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']
+    );
+    const expectedBuf = await crypto.subtle.sign('HMAC', key, enc.encode(payload));
+    const expectedB64 = btoa(String.fromCharCode(...new Uint8Array(expectedBuf)));
+
+    // Constant-time comparison to prevent timing attacks
+    if (sigB64.length !== expectedB64.length) return null;
+    const a = new TextEncoder().encode(sigB64);
+    const b = new TextEncoder().encode(expectedB64);
+    let diff = 0;
+    for (let i = 0; i < a.length; i++) diff |= a[i] ^ b[i];
+    if (diff !== 0) return null;
+
+    const parts = payload.split(':');
     return { email: parts[0], role: parts[1] };
-  } catch {
+  } catch (_e) {
     return null;
   }
 }
@@ -44,7 +66,8 @@ export async function onRequest(context) {
   const token      = authHeader.replace('Bearer ', '').trim();
   if (!token) return json({ ok: false, message: 'Unauthorized.' }, 401);
 
-  const decoded = decodeToken(token);
+  const secret  = (env && env.TOKEN_SECRET) || 'workdesk-demo-secret-change-in-production';
+  const decoded = await verifyToken(token, secret);
   if (!decoded || decoded.role !== 'superadmin') {
     return json({ ok: false, message: 'Forbidden. Super Admin access required.' }, 403);
   }
