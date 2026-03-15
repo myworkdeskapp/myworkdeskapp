@@ -17,3 +17,10 @@
 /api/sa-auth
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store, no-cache, must-revalidate
+
+/api/sa-org-admins
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store, no-cache, must-revalidate
+
+/api/reports
+  Cache-Control: no-store, no-cache, must-revalidate
