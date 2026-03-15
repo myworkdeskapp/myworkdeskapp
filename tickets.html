@@ -936,6 +936,11 @@ function submitTicket() {
   closeNewTicketModal();
   showToast(`Ticket ${id} submitted successfully!`, 'success');
   updateStats();
+  // Push notification for new ticket
+  if (window.WDNotifications) {
+    const safeTitle = title.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    window.WDNotifications.push('ticket', 'New ticket <strong>' + id + '</strong>: ' + safeTitle, 'tickets.html');
+  }
 }
 
 // ─── Tags ─────────────────────────────────────────────────────────────
@@ -1026,5 +1031,7 @@ updateStats();
 // Show a welcome notification after load
 setTimeout(() => showToast('2 tickets breaching SLA soon.', 'warn'), 1200);
 </script>
+<script src="assets/js/notifications.js"></script>
+<script src="auth.js"></script>
 </body>
 </html>
