@@ -36,11 +36,12 @@
 6. [Project Structure](#project-structure)
 7. [Cloudflare Queue Integration](#cloudflare-queue-integration)
 8. [Deployment](#deployment)
-9. [API Endpoints](#api-endpoints)
-10. [Design System](#design-system)
-11. [Getting Started (Local Preview)](#getting-started-local-preview)
-12. [Guidelines & Conventions](#guidelines--conventions)
-13. [License](#license)
+9. [Cloudflare Backend Notes](#cloudflare-backend-notes)
+10. [API Endpoints](#api-endpoints)
+11. [Design System](#design-system)
+12. [Getting Started (Local Preview)](#getting-started-local-preview)
+13. [Guidelines & Conventions](#guidelines--conventions)
+14. [License](#license)
 
 ---
 
@@ -810,6 +811,110 @@ ALLOWED_EMAIL_DOMAIN = "yourcompany.com"
 # Secrets (set via CLI — never commit)
 wrangler secret put OPENAI_API_KEY   # optional: external LLM for AI Assistant
 ```
+
+---
+
+## Cloudflare Backend Notes
+
+This section tracks every Cloudflare binding, secret, and configuration item required to run WorkDesk in production. Use it as a checklist when setting up a new deployment.
+
+**Legend:** ✅ Already configured in source code &nbsp;|&nbsp; ❌ Must be set up by the deployer
+
+---
+
+### Main App — `workdesk-worker` (Cloudflare Pages project)
+
+Deploy from the repository **root**. Config: `wrangler.toml` / `_headers` / `_redirects`.
+
+#### Secrets (set via CLI — never commit)
+
+| Secret | Status | Description | Command |
+|---|---|---|---|
+| `SA_USERNAME` | ❌ Required | Super-admin login username | `wrangler secret put SA_USERNAME --name workdesk-worker` |
+| `SA_SECURITY_KEY` | ❌ Required | Super-admin second-factor key | `wrangler secret put SA_SECURITY_KEY --name workdesk-worker` |
+| `SA_PASSWORD` | ❌ Required | Super-admin password | `wrangler secret put SA_PASSWORD --name workdesk-worker` |
+| `OPENAI_API_KEY` | ❌ Optional | External LLM for AI Assistant | `wrangler secret put OPENAI_API_KEY --name workdesk-worker` |
+
+After setting all three SA secrets, verify with:
+```bash
+wrangler secret list --name workdesk-worker
+# Expected output lists SA_USERNAME, SA_SECURITY_KEY, SA_PASSWORD
+```
+
+#### Bindings (uncomment blocks in `wrangler.toml` after creating each resource)
+
+| Binding | Status | Description | Setup command |
+|---|---|---|---|
+| D1 Database (`DB`) | ❌ Required | All app data (employees, payroll, attendance, …) | `wrangler d1 create workdesk-db` → paste `database_id` into `[[d1_databases]]` in `wrangler.toml`, then run `wrangler d1 execute workdesk-db --file=./database/schema.sql` |
+| KV Namespace (`SESSIONS`) | ❌ Required | User session token storage | `wrangler kv:namespace create "SESSIONS"` → paste `id` into `[[kv_namespaces]]` in `wrangler.toml` |
+| R2 Bucket (`ATTACHMENTS`) | ❌ Required | File uploads (documents, message attachments) | `wrangler r2 bucket create workdesk-attachments` → uncomment `[[r2_buckets]]` in `wrangler.toml` |
+| Queue Producer (`WORKDESK_QUEUE`) | ❌ Optional | Background jobs (notifications, payroll, reports) | `wrangler queues create workdesk-queue` → uncomment `[[queues.producers]]` in `wrangler.toml` |
+| AI Binding | ❌ Optional | Cloudflare Workers AI (AI Assistant page) | Enable **Workers AI** in Cloudflare Dashboard → uncomment `[ai]` in `wrangler.toml` |
+
+#### Already Configured in Source
+
+| Item | Status | What it does | File |
+|---|---|---|---|
+| SA page redirects | ✅ Configured | Redirects `/sa-portal.html`, `/sa-dashboard.html`, `/api/sa-auth` → `/` so the SA panel is unreachable on the main app URL | `_redirects` |
+| Security headers | ✅ Configured | `X-Frame-Options: DENY`, `X-Content-Type-Options`, CSP, `X-Robots-Tag: noindex` for SA API routes | `_headers` |
+| SA org-admin endpoint | ✅ Configured | `GET/POST/PUT/DELETE /api/sa-org-admins` — protected by SA token guard (username verified against `SA_USERNAME`) | `functions/api/sa-org-admins.js` |
+
+---
+
+### Super Admin Panel — `workdesk-super-admin` (separate Cloudflare Pages project)
+
+Deploy from the **`super-admin/`** subfolder as an entirely separate Cloudflare Pages project. Config: `super-admin/wrangler.toml` / `super-admin/_headers` / `super-admin/_redirects`. Full guide: `super-admin/DEPLOY.md`.
+
+```bash
+# First deploy
+wrangler pages deploy super-admin --project-name workdesk-super-admin --compatibility-date 2024-01-01
+```
+
+#### Secrets (set via CLI — never commit)
+
+| Secret | Status | Description | Command |
+|---|---|---|---|
+| `SA_USERNAME` | ❌ Required | Super-admin login username | `wrangler secret put SA_USERNAME --project-name workdesk-super-admin` |
+| `SA_SECURITY_KEY` | ❌ Required | Super-admin second-factor key | `wrangler secret put SA_SECURITY_KEY --project-name workdesk-super-admin` |
+| `SA_PASSWORD` | ❌ Required | Super-admin password | `wrangler secret put SA_PASSWORD --project-name workdesk-super-admin` |
+
+> **Important:** Use the same credential values as the main app's SA secrets so that tokens issued by the SA panel are also accepted by `/api/sa-org-admins` on the main app.
+
+After setting all three secrets, verify:
+```bash
+wrangler secret list --project-name workdesk-super-admin
+# Expected output lists SA_USERNAME, SA_SECURITY_KEY, SA_PASSWORD
+```
+
+#### Bindings (optional)
+
+| Binding | Status | Description | Setup |
+|---|---|---|---|
+| KV Namespace (`SA_SESSIONS`) | ❌ Optional | Server-side SA session store (enables forced session expiry / revocation) | `wrangler kv:namespace create "SA_SESSIONS" --project-name workdesk-super-admin` → uncomment `[[kv_namespaces]]` in `super-admin/wrangler.toml` and enable the KV blocks in `super-admin/functions/api/sa-auth.js` |
+
+#### Already Configured in Source
+
+| Item | Status | What it does | File |
+|---|---|---|---|
+| SA auth endpoint | ✅ Configured | `POST /api/sa-auth` (3-factor login, timing-safe), `GET /api/sa-auth` (token verify with username check against `SA_USERNAME`) | `super-admin/functions/api/sa-auth.js` |
+| SA org-admin endpoint | ✅ Configured | `GET/POST/PUT/DELETE /api/sa-org-admins` — protected by SA token guard | `super-admin/functions/api/sa-org-admins.js` |
+| Security headers | ✅ Configured | `X-Robots-Tag: noindex, nofollow, noarchive, nosnippet` on **all** pages; `Cache-Control: no-store` for all SA routes; full CSP | `super-admin/_headers` |
+| Login portal | ✅ Configured | Not linked from the main app; includes `noindex` meta tag | `super-admin/sa-portal.html` |
+| Dashboard | ✅ Configured | 8-hour session guard; token decoded and username cross-checked on load; `noindex` meta tag | `super-admin/sa-dashboard.html` |
+| Route fallback | ✅ Configured | `/` redirects to `sa-portal.html`; unknown routes fall back to login portal | `super-admin/_redirects` |
+
+#### Super Admin — Visibility & Security Summary
+
+The SA panel is protected at multiple layers to ensure it is **never publicly visible** and only accessible via a direct URL that is never linked publicly:
+
+1. **No public links** — The main app does not link to the SA panel URL anywhere.
+2. **`noindex` meta + `X-Robots-Tag`** — Search engines are instructed not to index any SA page or endpoint.
+3. **`_redirects` on main app** — Any attempt to reach SA pages via the main app URL is redirected to `/`.
+4. **Login wall** — `sa-portal.html` gates all access. `sa-dashboard.html` immediately redirects to the portal if no valid session is found.
+5. **3-factor credentials** — Login requires `SA_USERNAME`, `SA_SECURITY_KEY`, and `SA_PASSWORD` simultaneously, all stored as encrypted Cloudflare secrets (never in source code).
+6. **Timing-safe comparison** — All credential checks use HMAC-based constant-time comparison to prevent timing attacks.
+7. **Token username verification** — `GET /api/sa-auth` and every request to `/api/sa-org-admins` decode the token and verify the embedded username against `env.SA_USERNAME`, preventing forged tokens.
+8. **8-hour session expiry** — Client-side session expires automatically; KV-based server-side revocation is available (see optional SA_SESSIONS binding above).
 
 ---
 
