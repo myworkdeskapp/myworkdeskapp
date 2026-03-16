@@ -120,7 +120,28 @@ export async function onRequest(context) {
       });
     }
 
-    // TODO: Verify against KV store in production:
+    // Validate token structure: must decode to "<username>:sa:<timestamp>:<uuid>"
+    let tokenUsername = '';
+    try {
+      const decoded = atob(token);
+      const parts   = decoded.split(':sa:');
+      if (parts.length < 2 || !parts[0]) throw new Error('bad format');
+      tokenUsername = parts[0];
+    } catch {
+      return new Response(JSON.stringify({ ok: false, message: 'Invalid or expired session token.' }), {
+        status: 401, headers: corsHeaders,
+      });
+    }
+
+    // Cross-check the username in the token against the configured SA_USERNAME
+    const saUsername = env.SA_USERNAME || '';
+    if (saUsername && !(await safeEqual(tokenUsername, saUsername))) {
+      return new Response(JSON.stringify({ ok: false, message: 'Invalid or expired session token.' }), {
+        status: 401, headers: corsHeaders,
+      });
+    }
+
+    // Optionally verify against KV store (enables server-side session revocation):
     //   if (env.SA_SESSIONS) {
     //     const sess = await env.SA_SESSIONS.get('sa:' + token);
     //     if (!sess) return new Response(JSON.stringify({ ok: false, message: 'Invalid or expired session.' }), { status: 401, headers: corsHeaders });

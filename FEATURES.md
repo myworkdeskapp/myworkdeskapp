@@ -282,7 +282,7 @@ in `/functions/api/*.js`. All responses use `Content-Type: application/json`.
 | DELETE | `/api/notifications?id=`     | `functions/api/notifications.js`   | Delete notification              |
 | GET    | `/api/reports`               | `functions/api/reports.js`         | List recent reports              |
 | POST   | `/api/reports`               | `functions/api/reports.js`         | Generate report (queued)         |
-| POST   | `/api/sa-auth`               | `functions/api/sa-auth.js`         | Super Admin login                |
+| POST   | `/api/sa-auth`               | `super-admin/functions/api/sa-auth.js` | Super Admin login (SA project only) |
 | GET    | `/api/sa-org-admins`         | `functions/api/sa-org-admins.js`   | List org admins (SA only)        |
 | POST   | `/api/sa-org-admins`         | `functions/api/sa-org-admins.js`   | Create org admin (SA only)       |
 | PUT    | `/api/sa-org-admins`         | `functions/api/sa-org-admins.js`   | Update org admin (SA only)       |

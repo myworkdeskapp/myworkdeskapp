@@ -30,10 +30,15 @@ not_found_handling = "single-page-application"
 # ── Workers API routes ────────────────────────────────────────
 # Cloudflare Pages Functions live in functions/api/*.js
 #
-#   functions/api/sa-auth.js → POST/GET /api/sa-auth
+#   functions/api/sa-auth.js       → POST/GET /api/sa-auth
+#   functions/api/sa-org-admins.js → GET/POST/PUT/DELETE /api/sa-org-admins
 #
-# POST /api/sa-auth  — Authenticate with username + security key + password
-# GET  /api/sa-auth  — Verify an existing super admin session token
+# POST /api/sa-auth        — Authenticate with username + security key + password
+# GET  /api/sa-auth        — Verify an existing super admin session token
+# GET  /api/sa-org-admins  — List all org admins          (SA auth required)
+# POST /api/sa-org-admins  — Create a new org admin       (SA auth required)
+# PUT  /api/sa-org-admins  — Update an org admin          (SA auth required)
+# DELETE /api/sa-org-admins — Remove an org admin         (SA auth required)
 
 # ── KV Namespaces (optional) ──────────────────────────────────
 # SA_SESSIONS: persists super admin session tokens server-side.
