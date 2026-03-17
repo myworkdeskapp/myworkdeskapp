@@ -8,21 +8,13 @@
  * For production: replace the demo credential check with D1 DB lookup
  * and issue a signed JWT stored in SESSIONS KV.
  */
+import { CORS, json, getToken } from './_shared.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
   const method = request.method.toUpperCase();
 
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Content-Type': 'application/json',
-  };
-
-  if (method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders });
-  }
+  if (method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
 
   // ── POST /api/auth — sign in ─────────────────────────────
   if (method === 'POST') {
@@ -30,16 +22,12 @@ export async function onRequest(context) {
     try {
       body = await request.json();
     } catch {
-      return new Response(JSON.stringify({ ok: false, message: 'Invalid JSON body.' }), {
-        status: 400, headers: corsHeaders,
-      });
+      return json({ ok: false, message: 'Invalid JSON body.' }, 400);
     }
 
     const { orgId, employeeId, password } = body || {};
     if (!orgId || !employeeId || !password) {
-      return new Response(JSON.stringify({ ok: false, message: 'Organization ID, Employee ID, and password are required.' }), {
-        status: 400, headers: corsHeaders,
-      });
+      return json({ ok: false, message: 'Organization ID, Employee ID, and password are required.' }, 400);
     }
 
     // TODO: Replace with real D1 lookup:
@@ -72,9 +60,7 @@ export async function onRequest(context) {
       : false;
 
     if (!valid) {
-      return new Response(JSON.stringify({ ok: false, message: 'Invalid Organization ID, Employee ID, or password.' }), {
-        status: 401, headers: corsHeaders,
-      });
+      return json({ ok: false, message: 'Invalid Organization ID, Employee ID, or password.' }, 401);
     }
 
     // Issue a simple demo token (replace with signed JWT in production)
@@ -83,29 +69,17 @@ export async function onRequest(context) {
     // Optionally persist session in KV:
     //   if (env.SESSIONS) await env.SESSIONS.put('session:' + token, JSON.stringify({ orgId, employeeId }), { expirationTtl: 86400 });
 
-    return new Response(JSON.stringify({ ok: true, token, orgId, employeeId }), {
-      status: 200, headers: corsHeaders,
-    });
+    return json({ ok: true, token, orgId, employeeId });
   }
 
   // ── GET /api/auth — verify token ─────────────────────────
   if (method === 'GET') {
-    const authHeader = request.headers.get('Authorization') || '';
-    const token = authHeader.replace('Bearer ', '').trim();
-
-    if (!token) {
-      return new Response(JSON.stringify({ ok: false, message: 'No token provided.' }), {
-        status: 401, headers: corsHeaders,
-      });
-    }
+    const token = getToken(request);
+    if (!token) return json({ ok: false, message: 'No token provided.' }, 401);
 
     // TODO: Verify against KV / DB in production
-    return new Response(JSON.stringify({ ok: true, message: 'Token accepted (demo mode).' }), {
-      status: 200, headers: corsHeaders,
-    });
+    return json({ ok: true, message: 'Token accepted (demo mode).' });
   }
 
-  return new Response(JSON.stringify({ ok: false, message: 'Method not allowed.' }), {
-    status: 405, headers: corsHeaders,
-  });
+  return json({ ok: false, message: 'Method not allowed.' }, 405);
 }

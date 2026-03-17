@@ -630,20 +630,6 @@
 <script src="/assets/js/confirm-dialog.js"></script>
 <script src="/middleware/auth.js"></script>
 <script>
-function logout(){
-  WDConfirm.show({
-    title:       'Log Out',
-    message:     'Are you sure you want to log out?',
-    type:        'warn',
-    confirmText: 'Yes, Log Out',
-    cancelText:  'No',
-    onConfirm: function () {
-      localStorage.removeItem('workdesk_session');
-      window.location.href = '/pages/login.html';
-    }
-  });
-}
-
 /* ── Document Data ── */
 const documents = [
   { id:1, name:"Employment Contract - Ana Reyes.pdf", type:"pdf", category:"Contracts", owner:"HR Admin", size:"245 KB", version:"v2.1", uploaded:"2025-01-10", expiry:"2025-12-31", status:"Active", tags:["contract","employment"], signed:true },

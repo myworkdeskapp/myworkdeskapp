@@ -20,26 +20,20 @@
  *
  * In production wire to D1 aggregation queries and R2 for file storage.
  */
+import { CORS, getToken } from './_shared.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
   const method = request.method.toUpperCase();
 
-  const corsHeaders = {
-    'Access-Control-Allow-Origin':  '*',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-    'Content-Type':                 'application/json',
-    'Cache-Control':                'no-store, no-cache, must-revalidate',
-  };
+  const corsHeaders = { ...CORS, 'Cache-Control': 'no-store, no-cache, must-revalidate' };
 
   if (method === 'OPTIONS') {
     return new Response(null, { status: 204, headers: corsHeaders });
   }
 
   // ── Token guard ──────────────────────────────────────────────────────────
-  const authHeader = request.headers.get('Authorization') || '';
-  const token      = authHeader.replace('Bearer ', '').trim();
+  const token = getToken(request);
 
   if (!token) {
     return new Response(JSON.stringify({ ok: false, message: 'Authentication required.' }), {

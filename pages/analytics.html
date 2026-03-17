@@ -1236,20 +1236,6 @@
 <script src="/assets/js/confirm-dialog.js"></script>
 <script src="/middleware/auth.js"></script>
 <script>
-function logout() {
-  WDConfirm.show({
-    title:       'Log Out',
-    message:     'Are you sure you want to log out?',
-    type:        'warn',
-    confirmText: 'Yes, Log Out',
-    cancelText:  'No',
-    onConfirm: function () {
-      localStorage.removeItem('workdesk_session');
-      window.location.href = '/pages/login.html';
-    }
-  });
-}
-
 /* ── Live Clock ─────────────────────────────────────── */
 (function initClock() {
   const clockEl = document.getElementById('liveClock');

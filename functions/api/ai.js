@@ -14,17 +14,7 @@
  *   [ai]
  *   binding = "AI"
  */
-
-const CORS = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Content-Type': 'application/json',
-};
-
-function json(data, status) {
-  return new Response(JSON.stringify(data), { status: status || 200, headers: CORS });
-}
+import { CORS, json, getToken } from './_shared.js';
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -32,7 +22,7 @@ export async function onRequest(context) {
 
   if (method === 'OPTIONS') return new Response(null, { status: 204, headers: CORS });
 
-  const token = (request.headers.get('Authorization') || '').replace('Bearer ', '').trim();
+  const token = getToken(request);
   if (!token) return json({ ok: false, message: 'Unauthorized.' }, 401);
 
   const url = new URL(request.url);
