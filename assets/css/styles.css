@@ -3616,3 +3616,91 @@ hr.section-divider {
 .wdconfirm-actions .btn {
   min-width: 76px;
 }
+
+/* ======================================================
+   DASHBOARD REDESIGN — Global component enhancements
+   Added for Crextio-inspired UI update
+====================================================== */
+
+/* ── Card global hover transition ─────────────────────── */
+.card {
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.card:hover {
+  border-color: rgba(var(--primary-rgb), 0.3);
+  box-shadow: 0 4px 18px rgba(var(--primary-rgb), 0.08);
+}
+
+/* ── Enhanced main-content padding ───────────────────── */
+.main-content {
+  padding: 28px 28px 40px;
+}
+
+/* ── Page-level fade-in on load ───────────────────────── */
+@keyframes wdPageFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.main-content {
+  animation: wdPageFadeIn 0.4s ease both;
+}
+
+/* ── Smooth sidebar transition enhancement ────────────── */
+.sidebar-menu li {
+  transition: background 0.18s, color 0.18s, transform 0.15s;
+}
+.sidebar-menu li:hover {
+  transform: translateX(2px);
+}
+.sidebar-menu li.active {
+  transform: none;
+}
+
+/* ── Topbar subtle shadow ─────────────────────────────── */
+.topbar {
+  box-shadow: 0 1px 0 var(--border-light);
+}
+
+/* ── Button press micro-interaction ──────────────────── */
+.btn:active,
+.topbar-icon-btn:active {
+  transform: scale(0.96);
+}
+
+/* ── Tag enhanced ─────────────────────────────────────── */
+.tag {
+  transition: opacity 0.15s;
+}
+.tag:hover { opacity: 0.85; }
+
+/* ── Ticket item hover ────────────────────────────────── */
+.ticket-item {
+  transition: background 0.15s, border-radius 0.15s;
+}
+.ticket-item:hover {
+  background: var(--primary-soft);
+  border-radius: var(--radius-sm);
+}
+
+/* ── Notice hover ─────────────────────────────────────── */
+.notice {
+  transition: border-color 0.15s, background 0.15s;
+}
+.notice:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+/* ── Employee card hover ──────────────────────────────── */
+.employee-card {
+  transition: background 0.15s;
+}
+.employee-card:hover {
+  background: var(--primary-soft);
+  border-radius: var(--radius-sm);
+}
+
+/* ── Stat card enhanced border-radius ─────────────────── */
+.stat-card {
+  border-radius: 14px;
+}

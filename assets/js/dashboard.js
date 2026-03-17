@@ -1,5 +1,5 @@
 // WorkDesk — Dashboard JS
-// Handles greeting, sidebar navigation, quick actions, and stat card animations.
+// Handles greeting, sidebar navigation, quick actions, stat & big-number animations.
 // Cloudflare Pages compatible — no external dependencies, pure ES6.
 
 (function () {
@@ -9,14 +9,17 @@
   function setGreeting() {
     var el = document.getElementById('greetingText');
     if (!el) return;
-    var hour = new Date().getHours();
-    var greeting = hour < 12 ? 'Good Morning' : (hour < 17 ? 'Good Afternoon' : 'Good Evening');
-    var name = localStorage.getItem('workdesk_display_name') || 'HR Admin';
-    el.textContent = greeting + ', ' + name + '! \uD83D\uDC4B';
-    // Update avatar initials
+    var name = localStorage.getItem('workdesk_display_name') || 'Admin';
+    // Show "Welcome in, [Name] 👋" (Crextio-style)
+    el.textContent = 'Welcome in, ' + name + ' \uD83D\uDC4B';
+    // Update profile card name & initials
+    var profileNameEl  = document.getElementById('profileName');
+    var profileInitEl  = document.getElementById('profileInitials');
+    var topbarAvatarEl = document.querySelector('[id="topbarAvatar"], .employee-avatar[title]');
     var initials = name.split(' ').map(function (w) { return w[0]; }).join('').slice(0, 2).toUpperCase();
-    var avatarEls = document.querySelectorAll('.greeting-avatar, [id="topbarAvatar"]');
-    avatarEls.forEach(function (el) { el.textContent = initials; });
+    if (profileNameEl) profileNameEl.textContent = name;
+    if (profileInitEl) profileInitEl.textContent = initials;
+    if (topbarAvatarEl) topbarAvatarEl.textContent = initials;
   }
 
   // ── Sidebar navigation ────────────────────────────────────
@@ -69,7 +72,7 @@
           case 'settings':  window.location.href = 'settings.html'; break;
           case 'messages':  window.location.href = 'messaging.html'; break;
           case 'alerts':    showToast('No new alerts at this time.'); break;
-          default:          showToast('Opening ' + (action.textContent.trim()) + '…'); break;
+          default:          showToast('Opening ' + (action.textContent.trim()) + '\u2026'); break;
         }
       });
     });
@@ -93,7 +96,7 @@
               var card = postBtn.closest('.card');
               var notice = document.createElement('div');
               notice.className = 'notice';
-              notice.innerHTML = '<div class="notice-title">📢 New Announcement</div>' + text;
+              notice.innerHTML = '<div class="notice-title">\uD83D\uDCE2 New Announcement</div>' + text;
               card.appendChild(notice);
               showToast('Announcement posted.');
             }
@@ -118,7 +121,7 @@
     });
   }
 
-  // ── Animate stat numbers (count-up) ──────────────────────
+  // ── Animate stat numbers (legacy .stat-number count-up) ──
   function animateStatNumbers() {
     var statNumbers = document.querySelectorAll('.stat-number');
     statNumbers.forEach(function (el) {
