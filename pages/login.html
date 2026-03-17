@@ -12,9 +12,13 @@
 
   <style>
     :root {
-      --primary-green: #004d42;
-      --accent-glow:   #00F5D4;
-      --glass-border:  rgba(255, 255, 255, 0.15);
+      --primary:       #5A8F7B;
+      --primary-dark:  #497263;
+      --primary-rgb:   90, 143, 123;
+      --primary-soft:  #EBF4F1;
+      --accent:        #F4C86A;
+      --danger:        #E74C3C;
+      --glass-border:  rgba(90, 143, 123, 0.22);
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -26,7 +30,7 @@
       display: flex;
       flex-direction: column;
       color: #fff;
-      background-color: #020d0d;
+      background-color: #1a3d35;
       -webkit-font-smoothing: antialiased;
     }
 
@@ -39,10 +43,10 @@
     }
 
     @keyframes skyTransition {
-      0%, 100% { background: #020d0d; }
-      20%       { background: #0a2e2b; }
-      50%       { background: #0d7a70; }
-      80%       { background: #0a2e2b; }
+      0%, 100% { background: #1a3d35; }
+      20%       { background: #2a5a4e; }
+      50%       { background: #3d7a6a; }
+      80%       { background: #2a5a4e; }
     }
 
     .celestial-body {
@@ -56,9 +60,9 @@
     }
 
     @keyframes celestialMovement {
-      0%   { bottom: -10%; left:   0%; background: #4dabf7; opacity: 0; }
-      50%  { bottom:  85%; left:  50%; background:    #fff; opacity: 0.6; }
-      100% { bottom: -10%; left: 100%; background: #4dabf7; opacity: 0; }
+      0%   { bottom: -10%; left:   0%; background: #F4C86A; opacity: 0; }
+      50%  { bottom:  85%; left:  50%; background: var(--primary-soft); opacity: 0.45; }
+      100% { bottom: -10%; left: 100%; background: #F4C86A; opacity: 0; }
     }
 
     .bg-overlay {
@@ -68,14 +72,14 @@
       background-size: cover;
       background-position: center;
       z-index: -1;
-      filter: brightness(0.55) saturate(0.8);
+      filter: brightness(0.55) saturate(0.85);
     }
 
     .bg-overlay::after {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(0, 26, 24, 0.72) 0%, rgba(0, 13, 12, 0.55) 100%);
+      background: linear-gradient(135deg, rgba(26, 61, 53, 0.70) 0%, rgba(42, 90, 78, 0.50) 100%);
     }
 
     /* ======= TOP HEADER — logo only (form repositioned) ======= */
@@ -98,7 +102,7 @@
       width: auto;
       object-fit: contain;
       flex-shrink: 0;
-      filter: brightness(1.7) saturate(1.2) drop-shadow(0 0 8px rgba(0,245,212,0.35));
+      filter: brightness(1.08) saturate(1.1) drop-shadow(0 2px 8px rgba(90,143,123,0.45));
     }
 
     /* ── Login form ─────── */
@@ -125,7 +129,7 @@
     .h-input-wrap .h-icon {
       position: absolute;
       left: 10px;
-      color: rgba(255, 255, 255, 0.38);
+      color: rgba(90, 143, 123, 0.65);
       font-size: 12px;
       pointer-events: none;
       z-index: 1;
@@ -135,24 +139,24 @@
       height: 38px;
       width: 158px;
       padding: 0 12px 0 30px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(90, 143, 123, 0.28);
       border-radius: 8px;
-      background: rgba(0, 0, 0, 0.32);
+      background: rgba(255, 255, 255, 0.88);
       font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       font-size: 12.5px;
-      color: #fff;
+      color: #1F2933;
       outline: none;
       transition: border-color 0.2s, background 0.2s;
     }
 
-    .h-input-wrap input::placeholder { color: rgba(255, 255, 255, 0.36); }
+    .h-input-wrap input::placeholder { color: rgba(31, 41, 51, 0.40); }
 
     .h-input-wrap input:focus {
-      border-color: var(--accent-glow);
-      background: rgba(0, 0, 0, 0.48);
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.96);
     }
 
-    .h-input-wrap input.is-invalid { border-color: #ff6b6b; }
+    .h-input-wrap input.is-invalid { border-color: var(--danger); }
 
     /* ── Password eye toggle ─────── */
     .h-input-wrap input.pwd-input { padding-right: 32px; }
@@ -163,7 +167,7 @@
       background: none;
       border: none;
       cursor: pointer;
-      color: rgba(255, 255, 255, 0.38);
+      color: rgba(90, 143, 123, 0.55);
       padding: 0;
       display: flex;
       align-items: center;
@@ -185,9 +189,9 @@
     .btn-header-signin {
       height: 38px;
       padding: 0 18px;
-      background: var(--primary-green);
+      background: var(--primary);
       color: #fff;
-      border: 1px solid var(--accent-glow);
+      border: 1px solid var(--primary-dark);
       border-radius: 8px;
       font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       font-size: 12px;
@@ -199,13 +203,14 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
       flex-shrink: 0;
     }
 
     .btn-header-signin:hover {
       transform: translateY(-1px);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+      background: var(--primary-dark);
+      box-shadow: 0 6px 18px rgba(var(--primary-rgb), 0.40);
     }
 
     .btn-header-signin:active { transform: scale(0.97); }
@@ -245,22 +250,22 @@
     .h-sso-btn {
       height: 38px;
       padding: 0 13px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(90, 143, 123, 0.28);
       border-radius: 8px;
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.88);
       font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
       font-size: 11px;
       font-weight: 700;
-      color: #fff;
+      color: #1F2933;
       cursor: pointer;
       display: flex;
       align-items: center;
       gap: 6px;
       white-space: nowrap;
-      transition: background 0.2s;
+      transition: background 0.2s, border-color 0.2s;
     }
 
-    .h-sso-btn:hover { background: rgba(255, 255, 255, 0.13); }
+    .h-sso-btn:hover { background: rgba(255, 255, 255, 0.98); border-color: var(--primary); }
 
     /* ── Aux links (forgot / sign up) ─────── */
     .h-aux-links {
@@ -272,11 +277,11 @@
     }
 
     .h-aux-links a {
-      color: var(--accent-glow);
+      color: var(--accent);
       text-decoration: none;
       font-size: 10px;
       font-weight: 700;
-      opacity: 0.78;
+      opacity: 0.90;
       transition: opacity 0.15s;
     }
 
@@ -312,9 +317,9 @@
     }
 
     .animated-sub .rotator-text {
-      color: var(--accent-glow);
+      color: var(--accent);
       font-weight: 700;
-      border-left: 2px solid var(--accent-glow);
+      border-left: 2px solid var(--accent);
       padding-left: 12px;
     }
 
@@ -327,11 +332,11 @@
 
     /* ── Motivational quote box ─────── */
     .hero-quote-box {
-      background: rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.09);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-left: 3px solid var(--accent-glow);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-left: 3px solid var(--accent);
       border-radius: 12px;
       padding: 16px 20px;
       max-width: 500px;
@@ -348,7 +353,7 @@
     .hero-quote-author {
       font-size: 11px;
       font-weight: 700;
-      color: var(--accent-glow);
+      color: var(--accent);
     }
 
     @keyframes qFadeIn  { from { opacity: 0; transform: translateY(6px);  } to { opacity: 1; transform: translateY(0); } }
@@ -373,7 +378,7 @@
     }
 
     .cert-badge:hover { opacity: 1; filter: grayscale(0); }
-    .cert-badge i { font-size: 16px; color: var(--accent-glow); }
+    .cert-badge i { font-size: 16px; color: var(--accent); }
     .cert-badge span { font-size: 11px; font-weight: 800; letter-spacing: 0.9px; text-transform: uppercase; }
 
     .footer-copyright {
@@ -388,7 +393,7 @@
       bottom: 28px;
       left: 50%;
       transform: translateX(-50%) translateY(80px);
-      background: #0a3a35;
+      background: #2a5a4e;
       color: #fff;
       padding: 11px 22px;
       border-radius: 10px;
@@ -469,10 +474,10 @@
         width: 100%;
         gap: 10px;
         padding: 24px 20px 32px;
-        background: rgba(0, 0, 0, 0.48);
+        background: rgba(26, 61, 53, 0.82);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-top: 1px solid rgba(90, 143, 123, 0.2);
       }
 
       .h-field { flex: none; }
