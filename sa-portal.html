@@ -5,469 +5,356 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
   <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
-  <title>WorkDesk — Secure Access</title>
+  <title>myWORKDESK | Super Admin Portal</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
   <style>
+    :root {
+      --primary:       #5A8F7B;
+      --primary-dark:  #497263;
+      --primary-rgb:   90, 143, 123;
+      --primary-soft:  #EBF4F1;
+      --accent:        #F4C86A;
+      --danger:        #E74C3C;
+      --glass-border:  rgba(90, 143, 123, 0.22);
+    }
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
-      min-height: 100vh;
-      background: #0a1a15;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      color: #fff;
+      background-color: #1a2e28;
       -webkit-font-smoothing: antialiased;
     }
 
-    a { color: #2e7d6b; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-
-    /* ===== FULL-PAGE LAYOUT ===== */
-    .login-page {
-      min-height: 100vh;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .login-bg {
-      position: absolute;
+    /* ======= COVER PHOTO BACKGROUND ======= */
+    .bg-cover {
+      position: fixed;
       inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center;
-      z-index: 0;
-      filter: brightness(0.55) saturate(0.8);
+      z-index: -3;
+      background-image: url('/assets/login-cover-happy.png');
+      background-size: cover;
+      background-position: center;
     }
 
-    /* ===== DARK OVERLAY ===== */
-    .login-page::after {
-      content: '';
-      position: absolute;
+    /* 10% transparent glass overlay */
+    .bg-glass-overlay {
+      position: fixed;
       inset: 0;
-      z-index: 1;
-      background: linear-gradient(135deg, rgba(10,26,21,0.72) 0%, rgba(5,13,10,0.55) 100%);
+      z-index: -2;
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(2px) saturate(120%);
+      -webkit-backdrop-filter: blur(2px) saturate(120%);
     }
 
-    /* ===== TOP LOGO BAR ===== */
-    .top-logo {
-      position: absolute;
-      top: 28px;
-      left: 36px;
-      z-index: 10;
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      animation: logoEntrance 0.45s cubic-bezier(0.16, 1, 0.3, 1) both 0.1s;
-    }
-
-    .top-logo img {
-      width: 38px;
-      height: 38px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .logo-name {
-      font-size: 18px;
-      font-weight: 800;
-      color: #c8e6df;
-      letter-spacing: 0.04em;
-    }
-
-    .logo-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      background: rgba(46,125,107,0.22);
-      border: 1px solid rgba(46,125,107,0.45);
-      border-radius: 20px;
-      padding: 3px 9px;
-      font-size: 10px;
-      font-weight: 700;
-      color: #7de0c0;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      margin-left: 4px;
-    }
-
-    /* ===== LEFT HERO PANEL ===== */
-    .login-hero-panel {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 50%;
-      height: 100%;
-      z-index: 4;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: flex-start;
-      padding: 80px 60px 60px 60px;
-      animation: heroPanelEntrance 0.55s cubic-bezier(0.16, 1, 0.3, 1) both 0.15s;
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      background: rgba(46, 125, 107, 0.18);
-      border: 1px solid rgba(46, 125, 107, 0.45);
-      border-radius: 20px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 600;
-      color: #7de0c0;
-      margin-bottom: 24px;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) both 0.4s;
-    }
-
-    .hero-badge span {
-      width: 7px;
-      height: 7px;
-      background: #2e7d6b;
-      border-radius: 50%;
-      flex-shrink: 0;
-      box-shadow: 0 0 6px #2e7d6b;
-    }
-
-    .hero-heading {
-      font-size: 42px;
-      font-weight: 800;
-      color: #e0f4ef;
-      line-height: 1.18;
-      margin-bottom: 18px;
-      text-shadow: 0 2px 18px rgba(0,0,0,0.55);
-      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.5s;
-    }
-
-    .hero-heading .accent { color: #4dd4a8; }
-
-    .hero-sub {
-      font-size: 15px;
-      color: #a8cec7;
-      line-height: 1.65;
-      max-width: 380px;
-      margin-bottom: 32px;
-      text-shadow: 0 1px 6px rgba(0,0,0,0.4);
-      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.6s;
-    }
-
-    .hero-info-box {
-      background: rgba(0, 0, 0, 0.35);
-      backdrop-filter: blur(14px) saturate(150%);
-      -webkit-backdrop-filter: blur(14px) saturate(150%);
-      border: 1px solid rgba(46,125,107,0.35);
-      border-radius: 14px;
-      padding: 20px 22px;
-      max-width: 400px;
-      animation: slideUpFade 0.5s cubic-bezier(0.16, 1, 0.3, 1) both 0.7s;
-    }
-
-    .hero-info-title {
-      font-size: 11px;
-      font-weight: 700;
-      color: #4dd4a8;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-    }
-
-    .hero-info-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-      color: #a8cec7;
-      margin-bottom: 10px;
-    }
-
-    .hero-info-item:last-child { margin-bottom: 0; }
-
-    .hero-info-item .dot {
-      width: 6px;
-      height: 6px;
-      background: #2e7d6b;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    /* ===== LOGIN CARD WRAPPER ===== */
-    .login-card-wrapper {
-      position: absolute;
-      right: 5%;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 5;
-      width: 420px;
-      padding: 20px 0;
-      animation: loginCardEntrance 0.55s cubic-bezier(0.16, 1, 0.3, 1) both 0.25s;
-    }
-
-    /* ===== LOGIN CARD ===== */
-    .login-card {
-      background: rgba(10, 26, 21, 0.72);
-      backdrop-filter: blur(22px) saturate(160%);
-      -webkit-backdrop-filter: blur(22px) saturate(160%);
-      border-radius: 20px;
-      padding: 36px 34px 28px;
-      border: 1px solid rgba(46,125,107,0.35);
-      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(46,125,107,0.12) inset;
-    }
-
-    /* ===== SECURE ACCESS HEADER ===== */
-    .sa-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
-
-    .sa-shield {
-      width: 38px;
-      height: 38px;
-      background: linear-gradient(135deg, #1c5246, #0d2e26);
-      border: 1px solid rgba(46,125,107,0.5);
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .sa-shield svg {
-      width: 20px;
-      height: 20px;
-      color: #4dd4a8;
-    }
-
-    .card-title {
-      font-size: 20px;
-      font-weight: 700;
-      color: #e0f4ef;
-      line-height: 1.3;
-    }
-
-    .card-title .sub {
-      font-size: 13px;
-      font-weight: 400;
-      color: #6ba89e;
-      display: block;
-      margin-top: 1px;
-    }
-
-    .card-title-divider {
-      width: 36px;
-      height: 3px;
-      background: linear-gradient(90deg, #2e7d6b, #4dd4a8);
-      border-radius: 2px;
-      margin: 14px 0 16px;
-    }
-
-    /* ===== SECURITY NOTICE ===== */
-    .security-notice {
-      background: rgba(46,125,107,0.1);
-      border: 1px solid rgba(46,125,107,0.3);
-      border-radius: 8px;
-      padding: 10px 13px;
-      font-size: 12px;
-      color: #6ba89e;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      line-height: 1.5;
-    }
-
-    .security-notice svg {
-      width: 14px;
-      height: 14px;
-      flex-shrink: 0;
-      color: #4dd4a8;
-      margin-top: 1px;
-    }
-
-    /* ===== FORM FIELDS ===== */
-    .field-error {
-      font-size: 12px;
-      color: #f87171;
-      margin-top: 5px;
-      display: none;
-    }
-
-    .input-wrap input.is-invalid {
-      border-color: #f87171;
-      box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.14);
-    }
-
-    .field-group {
-      margin-bottom: 16px;
-    }
-
-    .field-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #a8cec7;
-      margin-bottom: 6px;
-    }
-
-    .input-wrap {
-      position: relative;
-    }
-
-    .input-wrap input {
-      width: 100%;
-      padding: 11px 40px;
-      border: 1.5px solid rgba(46,125,107,0.3);
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 14px;
-      color: #e0f4ef;
-      background: rgba(10, 35, 28, 0.75);
-      outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .input-wrap input::placeholder { color: #3d6b60; }
-
-    .input-wrap input:focus {
-      border-color: #2e7d6b;
-      box-shadow: 0 0 0 3px rgba(46, 125, 107, 0.18);
-    }
-
-    .input-wrap .field-icon {
-      position: absolute;
-      left: 13px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #3d6b60;
-      width: 16px;
-      height: 16px;
+    /* 3D depth vignette */
+    .bg-vignette {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      background: radial-gradient(ellipse at center, transparent 40%, rgba(0, 0, 0, 0.22) 100%);
       pointer-events: none;
     }
 
-    .input-wrap .eye-toggle {
+    /* ======= TOP HEADER ======= */
+    .top-header {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 0 28px;
+      height: 66px;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px) saturate(130%);
+      -webkit-backdrop-filter: blur(12px) saturate(130%);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* ── Logo image ─────── */
+    .header-logo-img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      flex-shrink: 0;
+      filter: brightness(1.15) saturate(1.1) drop-shadow(0 2px 10px rgba(0,0,0,0.30));
+    }
+
+    /* ── Super Admin badge ─────── */
+    .sa-header-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(244, 200, 106, 0.18);
+      border: 1px solid rgba(244, 200, 106, 0.45);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: 10px;
+      font-weight: 700;
+      color: #F4C86A;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-left: 4px;
+      flex-shrink: 0;
+    }
+
+    .sa-header-badge i { font-size: 9px; }
+
+    /* ── Login form ─────── */
+    .header-login-form {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    /* Each field group */
+    .h-field {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    /* Inner wrap: icon + input */
+    .h-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .h-input-wrap .h-icon {
       position: absolute;
-      right: 13px;
-      top: 50%;
-      transform: translateY(-50%);
+      left: 10px;
+      color: var(--primary-dark);
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .h-input-wrap input {
+      height: 38px;
+      width: 158px;
+      padding: 0 12px 0 30px;
+      border: 1px solid rgba(var(--primary-rgb), 0.40);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      font-size: 12.5px;
+      color: #1a2e28;
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.60), 0 2px 8px rgba(0,0,0,0.10);
+    }
+
+    .h-input-wrap input::placeholder { color: rgba(26, 46, 40, 0.45); }
+
+    .h-input-wrap input:focus {
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.60), 0 0 0 3px rgba(var(--primary-rgb), 0.18);
+    }
+
+    .h-input-wrap input.is-invalid { border-color: var(--danger); }
+
+    /* ── Password / Key eye toggle ─────── */
+    .h-input-wrap input.pwd-input { padding-right: 32px; }
+
+    .h-eye-toggle {
+      position: absolute;
+      right: 9px;
       background: none;
       border: none;
       cursor: pointer;
-      color: #3d6b60;
+      color: var(--primary-dark);
       padding: 0;
       display: flex;
       align-items: center;
     }
 
-    .input-wrap .eye-toggle svg { width: 16px; height: 16px; }
+    .h-eye-toggle svg { width: 14px; height: 14px; }
 
-    /* ===== SIGN IN BUTTON ===== */
-    .btn-signin {
-      width: 100%;
-      padding: 13px;
-      background: linear-gradient(135deg, #2e7d6b, #1f5a4d);
-      color: #fff;
-      border: none;
-      border-radius: 10px;
-      font-family: inherit;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
-      margin-bottom: 18px;
-      box-shadow: 0 4px 18px rgba(46,125,107,0.3);
+    /* ── Field error beneath input ─────── */
+    .h-field-error {
+      font-size: 11px;
+      color: var(--danger);
+      margin-top: 2px;
+      display: none;
+      white-space: nowrap;
+      padding-left: 2px;
     }
 
-    .btn-signin:hover  { background: linear-gradient(135deg, #25695a, #174535); box-shadow: 0 6px 24px rgba(46, 125, 107, 0.45); }
-    .btn-signin:active { transform: scale(0.98); }
-    .btn-signin:disabled { opacity: 0.6; cursor: not-allowed; }
-
-    .btn-signin .spinner {
-      display: none;
-      width: 16px;
-      height: 16px;
-      border: 2px solid rgba(255,255,255,0.35);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+    /* ── Sign In button ─────── */
+    .btn-header-signin {
+      height: 38px;
+      padding: 0 18px;
+      background: var(--primary);
+      color: #fff;
+      border: 1px solid var(--primary-dark);
+      border-radius: 8px;
+      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
       flex-shrink: 0;
     }
 
-    .btn-signin.loading .spinner { display: block; }
-    .btn-signin.loading .btn-arrow { display: none; }
-
-    /* ===== CARD FOOTER ===== */
-    .card-copyright {
-      text-align: center;
-      font-size: 11px;
-      color: #3d6b60;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid rgba(46,125,107,0.2);
+    .btn-header-signin:hover {
+      transform: translateY(-1px);
+      background: var(--primary-dark);
+      box-shadow: 0 6px 18px rgba(var(--primary-rgb), 0.40);
     }
 
-    /* ===== ANIMATIONS ===== */
-    @keyframes loginCardEntrance {
-      from { opacity: 0; transform: translateY(-50%) translateX(30px); }
-      to   { opacity: 1; transform: translateY(-50%) translateX(0); }
-    }
+    .btn-header-signin:active { transform: scale(0.97); }
+    .btn-header-signin:disabled { opacity: 0.68; cursor: not-allowed; transform: none; }
 
-    @keyframes heroPanelEntrance {
-      from { opacity: 0; transform: translateX(-30px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    @keyframes logoEntrance {
-      from { opacity: 0; transform: translateY(-14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes slideUpFade {
-      from { opacity: 0; transform: translateY(12px); }
-      to   { opacity: 1; transform: translateY(0); }
+    .btn-header-signin .h-spinner {
+      display: none;
+      width: 13px;
+      height: 13px;
+      border: 2px solid rgba(255, 255, 255, 0.38);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
     }
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 1100px) {
-      .login-hero-panel { padding: 80px 40px 60px 40px; }
-      .hero-heading { font-size: 34px; }
+    .btn-header-signin.loading .h-spinner { display: block; }
+
+    /* ── Header separator ─────── */
+    .h-sep {
+      font-size: 11px;
+      font-weight: 800;
+      opacity: 0.65;
+      letter-spacing: 1px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      color: #1a2e28;
     }
 
-    @media (max-width: 900px) {
-      .login-hero-panel { display: none; }
-      .login-card-wrapper {
-        right: 50%;
-        transform: translate(50%, -50%);
-        width: calc(100% - 48px);
-        max-width: 420px;
-      }
+    /* ======= MAIN HERO AREA ======= */
+    .main-hero {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding-left: 5%;
+      padding-right: 28px;
+      padding-top: 48px;
+      min-height: 0;
     }
 
-    @media (max-width: 480px) {
-      .top-logo { left: 20px; top: 20px; }
-      .login-card { padding: 28px 22px 22px; }
+    /* Hero content panel */
+    .hero-content {
+      max-width: 600px;
     }
 
-    /* ===== TOAST ===== */
+    /* ── Super Admin badge in hero ─────── */
+    .hero-sa-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(244, 200, 106, 0.15);
+      border: 1px solid rgba(244, 200, 106, 0.40);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #F4C86A;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .hero-sa-badge i { font-size: 10px; }
+
+    .hero-content h1 {
+      font-size: clamp(44px, 6vw, 72px);
+      font-weight: 800;
+      line-height: 0.93;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      color: #1a2e28;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    }
+
+    .hero-content h1 .accent {
+      color: var(--primary-dark);
+    }
+
+    .hero-sub {
+      font-size: clamp(14px, 1.5vw, 17px);
+      color: #1a2e28;
+      line-height: 1.6;
+      margin-bottom: 30px;
+      max-width: 480px;
+      opacity: 0.85;
+    }
+
+    /* ── Motivational quote box ─────── */
+    .hero-quote-box {
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(14px) saturate(130%);
+      -webkit-backdrop-filter: blur(14px) saturate(130%);
+      border: 1px solid rgba(var(--primary-rgb), 0.25);
+      border-left: 3px solid var(--primary);
+      border-radius: 12px;
+      padding: 16px 20px;
+      max-width: 500px;
+      box-shadow:
+        0 4px 16px rgba(0, 0, 0, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.60);
+    }
+
+    .hero-quote-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .hero-quote-text {
+      font-size: 13px;
+      font-style: italic;
+      color: #1a2e28;
+      line-height: 1.6;
+      margin-bottom: 7px;
+    }
+
+    .hero-quote-author {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    /* ======= TOAST ======= */
     .login-toast {
       position: fixed;
       bottom: 28px;
       left: 50%;
       transform: translateX(-50%) translateY(80px);
-      background: #0a1a15;
-      border: 1px solid rgba(46,125,107,0.4);
-      color: #a8cec7;
-      padding: 12px 22px;
+      background: var(--primary);
+      color: #fff;
+      padding: 11px 22px;
       border-radius: 10px;
       font-size: 13px;
       font-weight: 500;
@@ -484,172 +371,252 @@
     }
 
     .login-toast.error {
-      border-color: rgba(248,113,113,0.4);
-      color: #fca5a5;
+      background: #c0392b;
     }
+
+    /* ======= RESPONSIVE ======= */
+
+    /* Desktop: form overlays the header */
+    @media (min-width: 641px) {
+      body { position: relative; }
+
+      .header-login-form {
+        position: absolute;
+        top: 14px;
+        right: 28px;
+        z-index: 25;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+      }
+    }
+
+    @media (max-width: 1280px) and (min-width: 641px) {
+      .h-input-wrap input { width: 138px; }
+    }
+
+    @media (max-width: 1100px) and (min-width: 641px) {
+      .h-input-wrap input { width: 132px; }
+    }
+
+    @media (max-width: 860px) and (min-width: 641px) {
+      .h-input-wrap input { width: 150px; }
+      .main-hero { padding-right: 28px; }
+      .hero-content h1 { font-size: 40px; }
+    }
+
+    /* Mobile: form shown below hero content */
+    @media (max-width: 640px) {
+      body {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+      }
+
+      .top-header {
+        height: 58px;
+        padding: 0 20px;
+      }
+
+      .header-logo-img { height: 40px; }
+
+      .main-hero {
+        flex: none;
+        justify-content: center;
+        min-height: 55vh;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+
+      .hero-content h1 { font-size: 36px; }
+
+      .header-login-form {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 10px;
+        padding: 24px 20px 32px;
+        background: rgba(0, 0, 0, 0.25);
+        backdrop-filter: blur(20px) saturate(130%);
+        -webkit-backdrop-filter: blur(20px) saturate(130%);
+        border-top: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .h-field { flex: none; }
+
+      .h-input-wrap input { width: 100%; }
+
+      .btn-header-signin {
+        width: 100%;
+        justify-content: center;
+        height: 42px;
+        font-size: 13px;
+      }
+    }
+
   </style>
 </head>
 <body>
 
-  <div class="login-page">
+  <!-- Cover photo background layers -->
+  <div class="bg-cover"></div>
+  <div class="bg-glass-overlay"></div>
+  <div class="bg-vignette"></div>
 
-    <!-- Full-page background -->
-    <img
-      class="login-bg"
-      src="/assets/login-bg.jpg"
-      alt=""
-      aria-hidden="true"
-    />
+  <!-- ── TOP HEADER: Logo + SA badge ─────── -->
+  <header class="top-header">
+    <img class="header-logo-img" src="/assets/workdesk-logo.svg" alt="myWORKDESK" />
+    <span class="sa-header-badge"><i class="fa-solid fa-shield-halved"></i> Super Admin</span>
+  </header>
 
-    <!-- Top-left Logo -->
-    <div class="top-logo">
-      <img src="/assets/workdesk-logo.svg" alt="WorkDesk" />
-      <span class="logo-name">WorkDesk</span>
-      <span class="logo-badge">Super Admin</span>
-    </div>
+  <!-- ── MAIN HERO CONTENT ─────── -->
+  <main class="main-hero" aria-label="Super Admin Portal">
+    <div class="hero-content">
 
-    <!-- Left hero panel -->
-    <div class="login-hero-panel" aria-hidden="true">
-      <div class="hero-badge"><span></span> Platform Administration Console</div>
-      <h1 class="hero-heading">
-        Platform-Level<br>
-        <span class="accent">Control Center.</span>
-      </h1>
+      <div class="hero-sa-badge">
+        <i class="fa-solid fa-lock"></i> Restricted Access — Authorized Personnel Only
+      </div>
+
+      <h1>Admin<br><span class="accent">Control.</span></h1>
+
       <p class="hero-sub">
-        Restricted access. Super administrators manage all organizations, users, and platform-wide settings from this console.
+        Super administrator portal. Manage all organizations, users, roles, and platform-wide settings from this secure console.
       </p>
-      <div class="hero-info-box">
-        <div class="hero-info-title">Access Scope</div>
-        <div class="hero-info-item"><span class="dot"></span>All organizations &amp; workspaces</div>
-        <div class="hero-info-item"><span class="dot"></span>All users, roles &amp; permissions</div>
-        <div class="hero-info-item"><span class="dot"></span>Platform analytics &amp; audit logs</div>
-        <div class="hero-info-item"><span class="dot"></span>System configuration &amp; integrations</div>
-        <div class="hero-info-item"><span class="dot"></span>Billing, licensing &amp; deployments</div>
+
+      <!-- Daily motivational quote -->
+      <div class="hero-quote-box">
+        <div class="hero-quote-label"><i class="fa-solid fa-quote-left"></i> Daily Motivation</div>
+        <p class="hero-quote-text" id="quoteText"></p>
+        <span class="hero-quote-author" id="quoteAuthor"></span>
       </div>
     </div>
+  </main>
 
-    <!-- Login card -->
-    <div class="login-card-wrapper">
-      <div class="login-card">
+  <!-- ── SA LOGIN FORM (desktop: overlaid on header; mobile: below hero) ─────── -->
+  <form class="header-login-form" id="saLoginForm" novalidate>
 
-        <div class="sa-header">
-          <div class="sa-shield" aria-hidden="true">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
-            </svg>
-          </div>
-          <div class="card-title">
-            Secure Access
-            <span class="sub">Super Administrator Portal</span>
-          </div>
-        </div>
+    <!-- Username -->
+    <div class="h-field">
+      <div class="h-input-wrap">
+        <i class="fa-solid fa-user h-icon"></i>
+        <input
+          type="text"
+          id="saUsername"
+          name="username"
+          placeholder="Username"
+          autocomplete="off"
+          required
+        />
+      </div>
+      <span class="h-field-error" id="saUsernameError">Required</span>
+    </div>
 
-        <div class="card-title-divider"></div>
-
-        <div class="security-notice" role="note">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+    <!-- Password -->
+    <div class="h-field">
+      <div class="h-input-wrap">
+        <i class="fa-solid fa-lock h-icon"></i>
+        <input
+          type="password"
+          id="saPassword"
+          name="password"
+          class="pwd-input"
+          placeholder="Password"
+          autocomplete="current-password"
+          required
+        />
+        <button type="button" class="h-eye-toggle" id="eyeTogglePwd" aria-label="Toggle password visibility">
+          <svg id="eyeIconPwd" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
           </svg>
-          This portal is restricted to authorized super administrators only. All access attempts are logged and monitored.
-        </div>
-
-        <!-- Login Form -->
-        <form id="saLoginForm" novalidate>
-
-          <div class="field-group">
-            <label for="saUsername">Username</label>
-            <div class="input-wrap">
-              <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/>
-              </svg>
-              <input
-                type="text"
-                id="saUsername"
-                name="username"
-                placeholder="Enter super admin username"
-                autocomplete="off"
-                required
-              />
-            </div>
-            <span class="field-error" id="saUsernameError">Please enter your username.</span>
-          </div>
-
-          <div class="field-group">
-            <label for="saSecurityKey">Security Key</label>
-            <div class="input-wrap">
-              <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z"/>
-              </svg>
-              <input
-                type="password"
-                id="saSecurityKey"
-                name="securityKey"
-                placeholder="Enter your security key"
-                autocomplete="off"
-                required
-              />
-              <button type="button" class="eye-toggle" id="eyeToggleKey" aria-label="Toggle security key visibility">
-                <svg id="eyeIconKey" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
-              </button>
-            </div>
-            <span class="field-error" id="saSecurityKeyError">Please enter your security key.</span>
-          </div>
-
-          <div class="field-group">
-            <label for="saPassword">Password</label>
-            <div class="input-wrap">
-              <svg class="field-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
-              </svg>
-              <input
-                type="password"
-                id="saPassword"
-                name="password"
-                placeholder="Enter your password"
-                autocomplete="current-password"
-                required
-              />
-              <button type="button" class="eye-toggle" id="eyeTogglePwd" aria-label="Toggle password visibility">
-                <svg id="eyeIconPwd" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                </svg>
-              </button>
-            </div>
-            <span class="field-error" id="saPasswordError">Please enter your password.</span>
-          </div>
-
-          <button type="submit" class="btn-signin" id="loginBtn">
-            <span class="btn-label">Authenticate</span>
-            <span class="spinner" aria-hidden="true"></span>
-            <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <line x1="5" y1="12" x2="19" y2="12"/>
-              <polyline points="12 5 19 12 12 19"/>
-            </svg>
-          </button>
-
-        </form>
-
-        <div class="card-copyright">
-          © <span id="copyrightYear"></span> WorkDesk. Restricted Access — Authorized Personnel Only.
-        </div>
-
+        </button>
       </div>
+      <span class="h-field-error" id="saPasswordError">Required</span>
     </div>
-    <!-- end .login-card-wrapper -->
 
-  </div>
-  <!-- end .login-page -->
+    <!-- Secret Key -->
+    <div class="h-field">
+      <div class="h-input-wrap">
+        <i class="fa-solid fa-key h-icon"></i>
+        <input
+          type="password"
+          id="saSecretKey"
+          name="secretKey"
+          class="pwd-input"
+          placeholder="Secret Key"
+          autocomplete="off"
+          required
+        />
+        <button type="button" class="h-eye-toggle" id="eyeToggleKey" aria-label="Toggle secret key visibility">
+          <svg id="eyeIconKey" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+          </svg>
+        </button>
+      </div>
+      <span class="h-field-error" id="saSecretKeyError">Required</span>
+    </div>
 
+    <!-- Authenticate -->
+    <button type="submit" class="btn-header-signin" id="loginBtn">
+      <span class="btn-label">Sign In</span>
+      <span class="h-spinner" aria-hidden="true"></span>
+    </button>
+
+  </form>
+
+  <!-- Toast notification -->
   <div class="login-toast" id="loginToast" role="alert" aria-live="assertive"></div>
 
   <script>
-    document.getElementById('copyrightYear').textContent = new Date().getFullYear();
+    /* ── 30 daily-rotating motivational quotes ─────────────────────────────── */
+    var QUOTES = [
+      { text: 'Hard work beats talent when talent doesn\u2019t work hard.', author: 'Tim Notke' },
+      { text: 'Success is not final, failure is not fatal: it is the courage to continue that counts.', author: 'Winston Churchill' },
+      { text: 'The only way to do great work is to love what you do.', author: 'Steve Jobs' },
+      { text: 'Don\u2019t watch the clock; do what it does. Keep going.', author: 'Sam Levenson' },
+      { text: 'Success usually comes to those who are too busy to be looking for it.', author: 'Henry David Thoreau' },
+      { text: 'Opportunities don\u2019t happen. You create them.', author: 'Chris Grosser' },
+      { text: 'I find that the harder I work, the more luck I seem to have.', author: 'Thomas Jefferson' },
+      { text: 'The secret of getting ahead is getting started.', author: 'Mark Twain' },
+      { text: 'It always seems impossible until it\u2019s done.', author: 'Nelson Mandela' },
+      { text: 'Don\u2019t limit your challenges. Challenge your limits.', author: 'Jerry Dunn' },
+      { text: 'The way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
+      { text: 'Dream big, work hard, stay focused, and surround yourself with good people.', author: 'Unknown' },
+      { text: 'Hustle until your haters ask if you\u2019re hiring.', author: 'Unknown' },
+      { text: 'A dream doesn\u2019t become reality through magic; it takes sweat, determination, and hard work.', author: 'Colin Powell' },
+      { text: 'Push yourself, because no one else is going to do it for you.', author: 'Unknown' },
+      { text: 'Great things never come from comfort zones.', author: 'Unknown' },
+      { text: 'Wake up with determination. Go to bed with satisfaction.', author: 'Unknown' },
+      { text: 'The harder you work for something, the greater you\u2019ll feel when you achieve it.', author: 'Unknown' },
+      { text: 'Build your dream, or someone else will hire you to build theirs.', author: 'Tony Gaskins' },
+      { text: 'Success is not overnight. It\u2019s when every day you get a little better than the day before.', author: 'Dwayne Johnson' },
+      { text: 'The only place where success comes before work is in the dictionary.', author: 'Vidal Sassoon' },
+      { text: 'Do what you have to do until you can do what you want to do.', author: 'Oprah Winfrey' },
+      { text: 'You don\u2019t have to be great to start, but you have to start to be great.', author: 'Zig Ziglar' },
+      { text: 'Believe you can and you\u2019re halfway there.', author: 'Theodore Roosevelt' },
+      { text: 'It does not matter how slowly you go as long as you do not stop.', author: 'Confucius' },
+      { text: 'The difference between ordinary and extraordinary is that little extra.', author: 'Jimmy Johnson' },
+      { text: 'Motivation is what gets you started. Habit is what keeps you going.', author: 'Jim Ryun' },
+      { text: 'If you are not willing to risk the usual, you will have to settle for the ordinary.', author: 'Jim Rohn' },
+      { text: 'The man who moves a mountain begins by carrying away small stones.', author: 'Confucius' },
+      { text: 'Your time is limited, so don\u2019t waste it living someone else\u2019s life.', author: 'Steve Jobs' }
+    ];
 
-    // ── Toast helper ────────────────────────────────────────────────────────
+    /* Pick quote by day-of-year so it changes each calendar day */
+    (function () {
+      var now = new Date();
+      var start = new Date(now.getFullYear(), 0, 0);
+      var diff = now - start;
+      var oneDay = 1000 * 60 * 60 * 24;
+      var dayOfYear = Math.floor(diff / oneDay);
+      var q = QUOTES[dayOfYear % QUOTES.length];
+      document.getElementById('quoteText').textContent = '\u201c' + q.text + '\u201d';
+      document.getElementById('quoteAuthor').textContent = '\u2014 ' + q.author;
+    }());
+
+    /* ── Toast helper ─────────────────────────────────────────────────────── */
     function showToast(msg, isError, duration) {
       var toast = document.getElementById('loginToast');
       toast.textContent = msg;
@@ -658,7 +625,7 @@
       setTimeout(function () { toast.classList.remove('show'); }, duration || 3500);
     }
 
-    // ── Field error helpers ──────────────────────────────────────────────────
+    /* ── Field error helpers ──────────────────────────────────────────────── */
     function setFieldError(inputId, errorId, message) {
       var input = document.getElementById(inputId);
       var err   = document.getElementById(errorId);
@@ -674,20 +641,21 @@
     }
 
     function clearFieldErrors() {
-      setFieldError('saUsername',    'saUsernameError',    null);
-      setFieldError('saSecurityKey', 'saSecurityKeyError', null);
-      setFieldError('saPassword',    'saPasswordError',    null);
+      setFieldError('saUsername',  'saUsernameError',  null);
+      setFieldError('saPassword',  'saPasswordError',  null);
+      setFieldError('saSecretKey', 'saSecretKeyError', null);
     }
 
-    ['saUsername', 'saSecurityKey', 'saPassword'].forEach(function (id) {
-      document.getElementById(id).addEventListener('input', function () {
-        setFieldError(id, id + 'Error', null);
-      });
+    ['saUsername', 'saPassword', 'saSecretKey'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el) el.addEventListener('input', function () { setFieldError(id, id + 'Error', null); });
     });
 
-    // ── Eye toggle helper ────────────────────────────────────────────────────
+    /* ── Eye toggle helper ────────────────────────────────────────────────── */
     function makeEyeToggle(btnId, inputId, iconId) {
-      document.getElementById(btnId).addEventListener('click', function () {
+      var btn = document.getElementById(btnId);
+      if (!btn) return;
+      btn.addEventListener('click', function () {
         var input = document.getElementById(inputId);
         var icon  = document.getElementById(iconId);
         if (input.type === 'password') {
@@ -700,14 +668,14 @@
       });
     }
 
-    makeEyeToggle('eyeToggleKey', 'saSecurityKey', 'eyeIconKey');
-    makeEyeToggle('eyeTogglePwd', 'saPassword',    'eyeIconPwd');
+    makeEyeToggle('eyeTogglePwd', 'saPassword',  'eyeIconPwd');
+    makeEyeToggle('eyeToggleKey', 'saSecretKey', 'eyeIconKey');
 
-    // ── Rate limiting (client-side guard) ────────────────────────────────────
-    var failCount = 0;
+    /* ── Rate limiting (client-side guard) ────────────────────────────────── */
+    var failCount  = 0;
     var lockedUntil = 0;
 
-    // ── Form submission ──────────────────────────────────────────────────────
+    /* ── Form submission ──────────────────────────────────────────────────── */
     document.getElementById('saLoginForm').addEventListener('submit', function (e) {
       e.preventDefault();
       clearFieldErrors();
@@ -718,15 +686,15 @@
         return;
       }
 
-      var btn         = document.getElementById('loginBtn');
-      var username    = document.getElementById('saUsername').value.trim();
-      var securityKey = document.getElementById('saSecurityKey').value;
-      var password    = document.getElementById('saPassword').value;
-      var valid       = true;
+      var btn       = document.getElementById('loginBtn');
+      var username  = document.getElementById('saUsername').value.trim();
+      var password  = document.getElementById('saPassword').value;
+      var secretKey = document.getElementById('saSecretKey').value;
+      var valid     = true;
 
-      if (!username)    { setFieldError('saUsername',    'saUsernameError',    'Please enter your username.');    valid = false; }
-      if (!securityKey) { setFieldError('saSecurityKey', 'saSecurityKeyError', 'Please enter your security key.'); valid = false; }
-      if (!password)    { setFieldError('saPassword',    'saPasswordError',    'Please enter your password.');    valid = false; }
+      if (!username)  { setFieldError('saUsername',  'saUsernameError',  'Required'); valid = false; }
+      if (!password)  { setFieldError('saPassword',  'saPasswordError',  'Required'); valid = false; }
+      if (!secretKey) { setFieldError('saSecretKey', 'saSecretKeyError', 'Required'); valid = false; }
       if (!valid) return;
 
       var btnLabel = btn.querySelector('.btn-label');
@@ -737,7 +705,7 @@
       fetch('/api/sa-auth', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username, securityKey: securityKey, password: password })
+        body: JSON.stringify({ username: username, password: password, securityKey: secretKey })
       })
       .then(function (res) { return res.json().then(function (d) { return { status: res.status, data: d }; }); })
       .then(function (result) {
@@ -760,14 +728,14 @@
           } else {
             showToast(result.data && result.data.message ? result.data.message : 'Invalid credentials. Access denied.', true);
           }
-          if (btnLabel) btnLabel.textContent = 'Authenticate';
+          if (btnLabel) btnLabel.textContent = 'Sign In';
           btn.classList.remove('loading');
           btn.disabled = false;
         }
       })
       .catch(function () {
         showToast('Network error. Please try again.', true);
-        if (btnLabel) btnLabel.textContent = 'Authenticate';
+        if (btnLabel) btnLabel.textContent = 'Sign In';
         btn.classList.remove('loading');
         btn.disabled = false;
       });
