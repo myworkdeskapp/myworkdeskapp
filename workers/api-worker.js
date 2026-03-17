@@ -26,6 +26,8 @@
  *   /api/reports         → Report generation queue
  *   /api/sa-auth         → Super-Admin authentication
  *   /api/sa-org-admins   → Super-Admin org admin management
+ *   /api/sa-config-check → Super-Admin configuration status check
+ *   /api/aux             → Auxiliary / misc helpers
  *
  * Bindings required (configure in wrangler.toml before deploying):
  *   env.DB             — Cloudflare D1 database   (workdesk-db)
@@ -48,8 +50,28 @@
  */
 
 import { corsHeaders, jsonResponse, errorResponse } from './lib/utils.js';
-import { onRequest as saAuthHandler }      from '../functions/api/sa-auth.js';
-import { onRequest as saOrgAdminsHandler } from '../functions/api/sa-org-admins.js';
+import { onRequest as authHandler }          from '../functions/api/auth.js';
+import { onRequest as employeesHandler }     from '../functions/api/employees.js';
+import { onRequest as attendanceHandler }    from '../functions/api/attendance.js';
+import { onRequest as leaveHandler }         from '../functions/api/leave.js';
+import { onRequest as payrollHandler }       from '../functions/api/payroll.js';
+import { onRequest as performanceHandler }   from '../functions/api/performance.js';
+import { onRequest as recruitmentHandler }   from '../functions/api/recruitment.js';
+import { onRequest as ticketsHandler }       from '../functions/api/tickets.js';
+import { onRequest as documentsHandler }     from '../functions/api/documents.js';
+import { onRequest as messagesHandler }      from '../functions/api/messages.js';
+import { onRequest as timelineHandler }      from '../functions/api/timeline.js';
+import { onRequest as engagementHandler }    from '../functions/api/engagement.js';
+import { onRequest as analyticsHandler }     from '../functions/api/analytics.js';
+import { onRequest as aiHandler }            from '../functions/api/ai.js';
+import { onRequest as knowledgeHandler }     from '../functions/api/knowledge.js';
+import { onRequest as integrationsHandler }  from '../functions/api/integrations.js';
+import { onRequest as notificationsHandler } from '../functions/api/notifications.js';
+import { onRequest as reportsHandler }       from '../functions/api/reports.js';
+import { onRequest as auxHandler }           from '../functions/api/aux.js';
+import { onRequest as saAuthHandler }        from '../functions/api/sa-auth.js';
+import { onRequest as saOrgAdminsHandler }   from '../functions/api/sa-org-admins.js';
+import { onRequest as saConfigCheckHandler } from '../functions/api/sa-config-check.js';
 
 export default {
   /**
@@ -98,7 +120,7 @@ async function routeRequest(path, method, request, env, ctx) {
     'auth', 'employees', 'attendance', 'leave', 'payroll', 'performance',
     'recruitment', 'tickets', 'documents', 'messages', 'timeline', 'engagement',
     'analytics', 'ai', 'knowledge', 'integrations', 'notifications', 'reports',
-    'sa-auth', 'sa-org-admins', 'aux',
+    'sa-auth', 'sa-org-admins', 'sa-config-check', 'aux',
   ]);
 
   if (!ALLOWED_SEGMENTS.has(segment)) {
@@ -115,18 +137,36 @@ async function routeRequest(path, method, request, env, ctx) {
     data:   {},
   });
 
-  // ── Super-Admin routes ───────────────────────────────────────────────────
-  // These routes are wired up to the shared Pages Function handlers so that
-  // SA credentials stored in env (SA_USERNAME, SA_SECURITY_KEY, SA_PASSWORD)
-  // are respected identically whether the app runs on Pages or this worker.
-  if (segment === 'sa-auth') {
-    return saAuthHandler(makeContext());
+  // ── Route table ──────────────────────────────────────────────────────────
+  const HANDLERS = {
+    'auth':             authHandler,
+    'employees':        employeesHandler,
+    'attendance':       attendanceHandler,
+    'leave':            leaveHandler,
+    'payroll':          payrollHandler,
+    'performance':      performanceHandler,
+    'recruitment':      recruitmentHandler,
+    'tickets':          ticketsHandler,
+    'documents':        documentsHandler,
+    'messages':         messagesHandler,
+    'timeline':         timelineHandler,
+    'engagement':       engagementHandler,
+    'analytics':        analyticsHandler,
+    'ai':               aiHandler,
+    'knowledge':        knowledgeHandler,
+    'integrations':     integrationsHandler,
+    'notifications':    notificationsHandler,
+    'reports':          reportsHandler,
+    'aux':              auxHandler,
+    'sa-auth':          saAuthHandler,
+    'sa-org-admins':    saOrgAdminsHandler,
+    'sa-config-check':  saConfigCheckHandler,
+  };
+
+  const handler = HANDLERS[segment];
+  if (handler) {
+    return handler(makeContext());
   }
 
-  if (segment === 'sa-org-admins') {
-    return saOrgAdminsHandler(makeContext());
-  }
-
-  // ── Other API routes (wire up additional handlers here) ──────────────────
-  return errorResponse(501, 'Route handler not wired up yet. Configure module imports for standalone deployment.');
+  return errorResponse(500, 'Internal error: segment allowed but no handler found for /api/' + segment);
 }

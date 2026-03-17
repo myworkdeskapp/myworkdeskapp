@@ -13,26 +13,26 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --sa-bg:          #F5E9DA;
-      --sa-surface:     #FFFFFF;
-      --sa-surface2:    #F3F4F6;
-      --sa-border:      #E5E7EB;
-      --sa-border-hi:   #D1D5DB;
-      --sa-green:       #5A8F7B;
-      --sa-green-dk:    #497263;
-      --sa-overlay:     rgba(31,41,51,0.45);
-      --sa-text:        #1F2933;
-      --sa-text-muted:  #6B7280;
-      --sa-text-dim:    #9CA3AF;
-      --sa-red:         #E74C3C;
-      --sa-red-soft:    rgba(231,76,60,0.10);
-      --sa-amber:       #F5B041;
-      --sa-amber-soft:  rgba(245,176,65,0.12);
-      --sa-blue:        #3b82f6;
-      --sa-blue-soft:   rgba(59,130,246,0.10);
-      --sa-purple:      #8b5cf6;
-      --sa-purple-soft: rgba(139,92,246,0.10);
-      --sa-green-soft:  rgba(58,143,123,0.10);
+      --sa-bg:          #0d1f18;
+      --sa-surface:     #152b22;
+      --sa-surface2:    #1c3829;
+      --sa-border:      rgba(46,125,107,0.25);
+      --sa-border-hi:   rgba(46,125,107,0.50);
+      --sa-green:       #4dd4a8;
+      --sa-green-dk:    #2eb38f;
+      --sa-overlay:     rgba(5,13,10,0.75);
+      --sa-text:        #e0f4ef;
+      --sa-text-muted:  #7dc4b6;
+      --sa-text-dim:    #4a8f80;
+      --sa-red:         #f87171;
+      --sa-red-soft:    rgba(248,113,113,0.12);
+      --sa-amber:       #fbbf24;
+      --sa-amber-soft:  rgba(251,191,36,0.12);
+      --sa-blue:        #60a5fa;
+      --sa-blue-soft:   rgba(96,165,250,0.12);
+      --sa-purple:      #a78bfa;
+      --sa-purple-soft: rgba(167,139,250,0.12);
+      --sa-green-soft:  rgba(77,212,168,0.12);
       --sidebar-w:      240px;
       --header-h:       60px;
     }
@@ -144,7 +144,7 @@
     }
 
     .nav-item.active {
-      background: rgba(58,143,123,0.12);
+      background: var(--sa-green-soft);
       color: var(--sa-green);
     }
 
@@ -273,7 +273,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: rgba(58,143,123,0.10);
+      background: var(--sa-green-soft);
       border: 1px solid var(--sa-border-hi);
       border-radius: 20px;
       padding: 4px 12px;
@@ -288,7 +288,7 @@
       height: 6px;
       background: var(--sa-green);
       border-radius: 50%;
-      box-shadow: 0 0 6px rgba(58,143,123,0.4);
+      box-shadow: 0 0 6px rgba(77,212,168,0.4);
     }
 
     .topbar-time {
@@ -471,7 +471,7 @@
       font-weight: 600;
     }
 
-    .badge.active   { background: var(--sa-green-soft);  color: var(--sa-green); border: 1px solid rgba(58,143,123,0.25); }
+    .badge.active   { background: var(--sa-green-soft);  color: var(--sa-green); border: 1px solid rgba(77,212,168,0.25); }
     .badge.inactive { background: var(--sa-red-soft);    color: var(--sa-red);   border: 1px solid rgba(231,76,60,0.25); }
     .badge.pending  { background: var(--sa-amber-soft);  color: var(--sa-amber); border: 1px solid rgba(245,176,65,0.25); }
     .badge.info     { background: var(--sa-blue-soft);   color: var(--sa-blue);  border: 1px solid rgba(59,130,246,0.25); }
@@ -547,7 +547,7 @@
       background: var(--sa-green);
       color: #fff;
     }
-    .sa-btn.primary:hover { background: #25695a; }
+    .sa-btn.primary:hover { background: var(--sa-green-dk); }
 
     .sa-btn.ghost {
       background: var(--sa-surface2);
@@ -675,7 +675,7 @@
     }
 
     .sa-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-    .sa-toast.success { border-color: rgba(58,143,123,0.5); color: var(--sa-green); }
+    .sa-toast.success { border-color: rgba(77,212,168,0.5); color: var(--sa-green); }
     .sa-toast.error   { border-color: rgba(231,76,60,0.5);  color: var(--sa-red); }
 
     /* ===== MODAL ===== */
@@ -966,7 +966,7 @@
       font-size: 10px;
       font-weight: 600;
     }
-    .report-status-badge.ready   { background: var(--sa-green-soft);  color: var(--sa-green); border: 1px solid rgba(58,143,123,0.25); }
+    .report-status-badge.ready   { background: var(--sa-green-soft);  color: var(--sa-green); border: 1px solid rgba(77,212,168,0.25); }
     .report-status-badge.running { background: var(--sa-blue-soft);   color: var(--sa-blue);  border: 1px solid rgba(59,130,246,0.25); }
     .report-status-badge.failed  { background: var(--sa-red-soft);    color: var(--sa-red);   border: 1px solid rgba(231,76,60,0.25); }
   </style>
@@ -2325,7 +2325,7 @@ wrangler secret put SA_PASSWORD     --name workdesk-worker</pre>
       { label: 'Very Weak', color: '#ef4444', pct: '20%' },
       { label: 'Weak',      color: '#f59e0b', pct: '40%' },
       { label: 'Fair',      color: '#f59e0b', pct: '60%' },
-      { label: 'Strong',    color: '#5A8F7B', pct: '80%' },
+      { label: 'Strong',    color: '#2eb38f', pct: '80%' },
       { label: 'Very Strong', color: '#4dd4a8', pct: '100%' },
     ];
     var lvl = levels[Math.min(score, levels.length - 1)];
