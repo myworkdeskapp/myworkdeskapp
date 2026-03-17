@@ -1206,26 +1206,12 @@
 <script>
   // ── Session guard ──
   document.addEventListener('DOMContentLoaded', function () {
-    if (!localStorage.getItem('workdesk_session')) {
-      window.location.href = '/pages/login.html';
+    if (!localStorage.getItem('workdesk_token')) {
+      window.location.replace('/pages/login.html');
       return;
     }
     initPage();
   });
-
-  function logout() {
-    WDConfirm.show({
-      title:       'Log Out',
-      message:     'Are you sure you want to log out?',
-      type:        'warn',
-      confirmText: 'Yes, Log Out',
-      cancelText:  'No',
-      onConfirm: function () {
-        localStorage.removeItem('workdesk_session');
-        window.location.href = '/pages/login.html';
-      }
-    });
-  }
 
   // ── Stages order ──
   const STAGES = ['Applied', 'Screening', 'Interview', 'Offer', 'Hired', 'Rejected'];
