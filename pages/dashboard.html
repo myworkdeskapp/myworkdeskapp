@@ -141,10 +141,14 @@
       font-weight: 500;
     }
 
-    /* ── Primary cards row ─────────────────────────────────────── */
+    /* ── Primary cards row — 4-col Crextio grid ───────────────── */
     .dash-cards-row {
       display: grid;
-      grid-template-columns: 260px 1fr 240px;
+      grid-template-columns: 250px 1fr 220px 240px;
+      grid-template-rows: auto auto;
+      grid-template-areas:
+        "profile progress timer onboarding"
+        "profile calendar calendar onboarding";
       gap: 18px;
       margin-bottom: 18px;
       align-items: start;
@@ -152,16 +156,18 @@
 
     /* ── Profile card ──────────────────────────────────────────── */
     .profile-card {
+      grid-area: profile;
+      align-self: stretch;
       border-radius: 16px !important;
       padding: 0 !important;
       overflow: hidden;
-      animation: fadeSlideUp 0.55s 0.08s ease both;
+      animation: fadeSlideUp 0.55s 0.06s ease both;
       display: flex;
       flex-direction: column;
     }
     .profile-card-top {
-      height: 170px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      height: 230px;
+      background: linear-gradient(150deg, var(--primary) 0%, var(--primary-dark) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -169,38 +175,59 @@
       flex-shrink: 0;
     }
     .profile-photo {
-      width: 90px;
-      height: 90px;
+      width: 96px;
+      height: 96px;
       border-radius: 50%;
       background: rgba(255,255,255,0.22);
       border: 3px solid rgba(255,255,255,0.45);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 700;
       color: #fff;
+      position: relative;
+      z-index: 1;
     }
-    .profile-card-body { padding: 18px 18px 16px; flex: 1; }
-    .profile-name {
-      font-size: 16px;
+    /* Dark gradient overlay — name / role / salary pill sit on top of the photo */
+    .profile-card-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.70) 0%, transparent 100%);
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+      z-index: 2;
+    }
+    .profile-name-overlay {
+      font-size: 15px;
       font-weight: 700;
-      color: var(--text-main);
-      margin-bottom: 2px;
+      color: #fff;
+      line-height: 1.2;
+      display: block;
     }
-    .profile-role { font-size: 12px; color: var(--text-muted); margin-bottom: 14px; }
-    .profile-salary-pill {
+    .profile-role-overlay {
+      font-size: 11px;
+      color: rgba(255,255,255,0.75);
+      display: block;
+      margin-top: 2px;
+    }
+    .profile-salary-overlay {
+      background: var(--accent);
+      color: var(--text-main);
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 700;
+      white-space: nowrap;
+      flex-shrink: 0;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 7px 16px;
-      background: var(--primary-soft);
-      color: var(--primary-dark);
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 700;
-      border: 1px solid rgba(90,143,123,0.2);
-      margin-bottom: 16px;
     }
 
     /* ── Accordion (profile sub-sections) ─────────────────────── */
@@ -267,16 +294,14 @@
     .acc-device-name { font-size: 13px; font-weight: 600; color: var(--text-main); display: block; }
     .acc-device-sub  { font-size: 11px; color: var(--text-muted); }
 
-    /* ── Middle column ──────────────────────────────────────────── */
-    .dash-mid-col {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      animation: fadeSlideUp 0.55s 0.14s ease both;
-    }
+    .profile-card-body { padding: 16px 16px 14px; flex: 1; }
 
-    /* ── Progress chart card ────────────────────────────────────── */
-    .progress-chart-card { border-radius: 16px !important; }
+    /* ── Middle column (no longer a flex wrapper — each card is its own grid cell) ── */
+    .progress-chart-card {
+      grid-area: progress;
+      border-radius: 16px !important;
+      animation: fadeSlideUp 0.55s 0.12s ease both;
+    }
     .progress-chart-header {
       display: flex;
       align-items: flex-start;
@@ -346,8 +371,13 @@
     .bcv-bar.active:hover { background: var(--accent); opacity: 0.85; }
     .bcv-label { font-size: 10px; color: var(--text-muted); }
 
-    /* ── Calendar v2 (weekly view) ──────────────────────────────── */
-    .calendar-card-v2 { border-radius: 16px !important; padding: 20px !important; }
+    /* ── Calendar v2 — spans columns 2-3 in the second row ──────── */
+    .calendar-card-v2 {
+      grid-area: calendar;
+      border-radius: 16px !important;
+      padding: 20px !important;
+      animation: fadeSlideUp 0.55s 0.22s ease both;
+    }
     .cal2-header {
       display: flex;
       align-items: center;
@@ -462,16 +492,12 @@
       color: var(--primary-dark);
     }
 
-    /* ── Right column ───────────────────────────────────────────── */
-    .dash-right-col {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-      animation: fadeSlideUp 0.55s 0.2s ease both;
+    /* ── Time tracker card — own grid cell (col 3, row 1) ────────── */
+    .time-tracker-card {
+      grid-area: timer;
+      border-radius: 16px !important;
+      animation: fadeSlideUp 0.55s 0.16s ease both;
     }
-
-    /* ── Time tracker card ──────────────────────────────────────── */
-    .time-tracker-card { border-radius: 16px !important; }
     .time-tracker-title {
       font-size: 14px;
       font-weight: 600;
@@ -556,8 +582,13 @@
       color: #fff;
     }
 
-    /* ── Onboarding card ────────────────────────────────────────── */
-    .onboarding-card { border-radius: 16px !important; }
+    /* ── Onboarding card — spans both rows of col 4 ────────────── */
+    .onboarding-card {
+      grid-area: onboarding;
+      align-self: stretch;
+      border-radius: 16px !important;
+      animation: fadeSlideUp 0.55s 0.20s ease both;
+    }
     .onboard-header {
       display: flex;
       align-items: center;
@@ -725,16 +756,38 @@
     .card { border-radius: 14px; }
 
     /* ── Responsive breakpoints ─────────────────────────────────── */
-    @media (max-width: 1300px) {
-      .dash-cards-row { grid-template-columns: 240px 1fr 220px; }
+    @media (max-width: 1400px) {
+      .dash-cards-row { grid-template-columns: 230px 1fr 200px 220px; }
     }
-    @media (max-width: 1100px) {
-      .dash-cards-row { grid-template-columns: 1fr 1fr; }
-      .dash-right-col { flex-direction: row; }
-      .time-tracker-card, .onboarding-card { flex: 1; }
+    @media (max-width: 1200px) {
+      .dash-cards-row {
+        grid-template-columns: 220px 1fr 200px;
+        grid-template-areas:
+          "profile progress timer"
+          "profile calendar calendar"
+          "onboarding onboarding onboarding";
+      }
+    }
+    @media (max-width: 960px) {
+      .dash-cards-row {
+        grid-template-columns: 1fr 1fr;
+        grid-template-areas:
+          "profile progress"
+          "profile timer"
+          "calendar calendar"
+          "onboarding onboarding";
+      }
     }
     @media (max-width: 860px) {
-      .dash-cards-row { grid-template-columns: 1fr; }
+      .dash-cards-row {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+          "profile"
+          "progress"
+          "timer"
+          "calendar"
+          "onboarding";
+      }
       .dash-hero { flex-direction: column; }
       .metrics-strip { grid-template-columns: 1fr 1fr; }
       .dash-hero-right { justify-content: center; }
@@ -1033,14 +1086,19 @@
           <div class="card profile-card">
             <div class="profile-card-top">
               <div class="profile-photo" id="profileInitials">JD</div>
+              <!-- Gradient overlay: name, role, salary pill -->
+              <div class="profile-card-overlay">
+                <div>
+                  <span class="profile-name-overlay" id="profileName">John Doe</span>
+                  <span class="profile-role-overlay">HR Administrator</span>
+                </div>
+                <div class="profile-salary-overlay">
+                  <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  $5,200
+                </div>
+              </div>
             </div>
             <div class="profile-card-body">
-              <div class="profile-name" id="profileName">John Doe</div>
-              <div class="profile-role">HR Administrator</div>
-              <div class="profile-salary-pill">
-                <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                $5,200 / mo
-              </div>
 
               <div class="acc-item">
                 <div class="acc-trigger" onclick="toggleAcc(this.closest('.acc-item'))">
@@ -1094,11 +1152,8 @@
           </div>
           <!-- end profile card -->
 
-          <!-- ── Middle column: Progress chart + Calendar ── -->
-          <div class="dash-mid-col">
-
-            <!-- Progress (weekly work-time bar chart) -->
-            <div class="card progress-chart-card">
+          <!-- ── Progress chart (weekly work-time bar chart) ── -->
+          <div class="card progress-chart-card">
               <div class="progress-chart-header">
                 <div>
                   <div class="card-title">Progress</div>
@@ -1124,8 +1179,8 @@
               </div>
             </div>
 
-            <!-- Calendar (weekly view) -->
-            <div class="card calendar-card-v2" id="calendarCard">
+          <!-- ── Calendar (weekly view) — spans cols 2-3 row 2 ── -->
+          <div class="card calendar-card-v2" id="calendarCard">
               <div class="cal2-header">
                 <div class="cal2-nav-pills">
                   <button class="cal2-nav-pill" id="calPrevMonthPill">…</button>
@@ -1142,14 +1197,8 @@
               </div>
             </div>
 
-          </div>
-          <!-- end middle column -->
-
-          <!-- ── Right column: Time Tracker + Onboarding ── -->
-          <div class="dash-right-col">
-
-            <!-- Time Tracker -->
-            <div class="card time-tracker-card">
+          <!-- ── Time Tracker — own grid cell (col 3, row 1) ── -->
+          <div class="card time-tracker-card">
               <div class="time-tracker-title">
                 Time tracker
                 <span class="card-action" onclick="window.location.href='attendance.html'" style="cursor:pointer;font-size:11px;">Details →</span>
@@ -1171,8 +1220,8 @@
               </div>
             </div>
 
-            <!-- Onboarding -->
-            <div class="card onboarding-card">
+          <!-- ── Onboarding — spans both rows of col 4 ── -->
+          <div class="card onboarding-card">
               <div class="onboard-header">
                 <span class="onboard-title">Onboarding</span>
                 <span class="onboard-pct">18%</span>
@@ -1238,9 +1287,6 @@
                 </div>
               </div>
             </div>
-
-          </div>
-          <!-- end right column -->
 
         </div>
         <!-- end dash-cards-row -->
