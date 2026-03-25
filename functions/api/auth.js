@@ -55,17 +55,34 @@ export async function onRequest(context) {
       return diff === 0;
     }
 
-    // Resolve credentials: use env vars when configured, fall back to built-in
-    // demo values so the app works out-of-the-box for evaluation/staging.
+    const isProduction = String(env.ENVIRONMENT || '').toLowerCase() === 'production';
+    const hasDemoEnv = Boolean(env.DEMO_ORG_ID && env.DEMO_EMPLOYEE_ID && env.DEMO_PASSWORD);
+
+    // In production, require explicit credentials and reject known public defaults.
+    if (isProduction && !hasDemoEnv) {
+      return json({ ok: false, message: 'Authentication is not configured for production.' }, 503);
+    }
+
+    if (
+      isProduction &&
+      env.DEMO_ORG_ID === 'DEMO' &&
+      env.DEMO_EMPLOYEE_ID === 'EMP001' &&
+      env.DEMO_PASSWORD === 'WorkDesk@2025'
+    ) {
+      return json({ ok: false, message: 'Default demo credentials are blocked in production.' }, 503);
+    }
+
+    // Resolve credentials: use explicit env vars in production; keep built-in
+    // defaults for local evaluation/staging only.
     //
     // ⚠️  PRODUCTION WARNING: Replace all three env vars (DEMO_ORG_ID,
     //     DEMO_EMPLOYEE_ID, DEMO_PASSWORD) with strong, unique values in your
     //     Cloudflare Pages project settings before handling real user data.
     //     The built-in defaults are public knowledge and must not be used in
     //     a live deployment with real employees or sensitive information.
-    const demoOrgId      = env.DEMO_ORG_ID      || 'DEMO';
-    const demoEmployeeId = env.DEMO_EMPLOYEE_ID  || 'EMP001';
-    const demoPassword   = env.DEMO_PASSWORD     || 'WorkDesk@2025';
+    const demoOrgId = isProduction ? env.DEMO_ORG_ID : (env.DEMO_ORG_ID || 'DEMO');
+    const demoEmployeeId = isProduction ? env.DEMO_EMPLOYEE_ID : (env.DEMO_EMPLOYEE_ID || 'EMP001');
+    const demoPassword = isProduction ? env.DEMO_PASSWORD : (env.DEMO_PASSWORD || 'WorkDesk@2025');
     const valid =
       await safeEqual(orgId, demoOrgId) &&
       await safeEqual(employeeId, demoEmployeeId) &&
