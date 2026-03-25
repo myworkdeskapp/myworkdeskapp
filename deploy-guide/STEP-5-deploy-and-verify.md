@@ -58,7 +58,7 @@ Open each URL below and verify it loads correctly:
 ### Admin / Super-Admin Portal
 | Page              | URL                                                     |
 |-------------------|---------------------------------------------------------|
-| Admin Login       | `https://myworkdeskapp.pages.dev/pages/sa-login.html`   |
+| Admin Login       | `https://myworkdeskapp.pages.dev/app/login.html` (select role) |
 | Admin Dashboard   | `https://myworkdeskapp.pages.dev/pages/sa-dashboard.html`|
 
 ### Root & Redirect Checks
@@ -66,7 +66,7 @@ Open each URL below and verify it loads correctly:
 |-------------------------------|-----------------------------------------------------|
 | `https://myworkdeskapp.pages.dev/` | Serves `index.html` (root landing page)        |
 | `https://myworkdeskapp.pages.dev/login.html` | Redirects → `/app/login.html`     |
-| `https://myworkdeskapp.pages.dev/admin` | Redirects → `/pages/sa-login.html`      |
+| `https://myworkdeskapp.pages.dev/admin` | Redirects → `/app/login.html`           |
 
 ---
 
@@ -77,7 +77,8 @@ Open each URL below and verify it loads correctly:
 - Employee ID: `EMP001`
 - Password: whatever you set in `DEMO_PASSWORD` env var
 
-**Admin login** (`/pages/sa-login.html`):
+**Admin/Super Admin login** (`/app/login.html`):
+- Role: `Admin` or `Super Admin (CEO)` as needed
 - Username: value of `SA_USERNAME`
 - Secret Key: value of `SA_SECURITY_KEY`
 - Password: value of `SA_PASSWORD`
@@ -89,7 +90,7 @@ Open each URL below and verify it loads correctly:
 | Symptom                         | Fix                                                                           |
 |---------------------------------|-------------------------------------------------------------------------------|
 | 404 on `/app/login.html`        | Check that Build output directory is `/` (not `dist` or `public`)             |
-| 404 on everything / blank page  | Check that **Root directory** is `/` — not a file path like `/pages/sa-login.html` |
+| 404 on everything / blank page  | Check that **Root directory** is `/` — not a file path like `/app/login.html` |
 | API calls fail (401/500)        | Check env variables are saved — go to Settings → Environment variables        |
 | Redirect not working            | Make sure `_redirects` file exists in repo root (it does — do not delete it)  |
 | Login says "Invalid credentials"| Double-check `DEMO_PASSWORD` / `SA_PASSWORD` values in env vars               |

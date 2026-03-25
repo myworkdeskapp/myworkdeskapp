@@ -25,9 +25,12 @@ export async function onRequest(context) {
       return json({ ok: false, message: 'Invalid JSON body.' }, 400);
     }
 
-    const { orgId, employeeId, password } = body || {};
+    const { orgId, employeeId, password, role } = body || {};
     if (!orgId || !employeeId || !password) {
       return json({ ok: false, message: 'Organization ID, Employee ID, and password are required.' }, 400);
+    }
+    if (role && role !== 'employee' && role !== 'admin') {
+      return json({ ok: false, message: 'Role must be either employee or admin.' }, 400);
     }
 
     // TODO: Replace with real D1 lookup:
@@ -78,7 +81,7 @@ export async function onRequest(context) {
     // Optionally persist session in KV:
     //   if (env.SESSIONS) await env.SESSIONS.put('session:' + token, JSON.stringify({ orgId, employeeId }), { expirationTtl: 86400 });
 
-    return json({ ok: true, token, orgId, employeeId });
+    return json({ ok: true, token, orgId, employeeId, role: role || 'employee' });
   }
 
   // ── GET /api/auth — verify token ─────────────────────────

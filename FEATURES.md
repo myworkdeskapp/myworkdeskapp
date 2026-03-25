@@ -69,8 +69,8 @@
 | `knowledge.html`              | Knowledge Base     | Internal wiki / HR policy articles          | `/api/knowledge`                      |
 | `integrations.html`           | Integrations       | Connect Slack, Zoom, Xero, etc.             | `/api/integrations`                   |
 | `settings.html`               | Settings           | Profile, notifications, org config          | `/api/notifications`, `POST /api/auth`|
-| `super-admin/sa-portal.html`  | SA Login           | Super Admin sign-in                         | `POST /api/sa-auth`                   |
-| `super-admin/sa-dashboard.html`| SA Dashboard      | Manage organizations and org admins         | `/api/sa-org-admins`                  |
+| `app/login.html`              | Unified Sign In    | Super Admin/Admin/Employee role-based login | `POST /api/auth`, `POST /api/sa-auth` |
+| `pages/sa-dashboard.html`     | SA Dashboard       | Manage organizations and org admins         | `/api/sa-org-admins`                  |
 
 ---
 
@@ -210,10 +210,10 @@
   the file to R2.
 - **API**: `GET /api/reports` (list recent), `POST /api/reports` (generate new).
 
-### 3.22 Super Admin (`/super-admin/`)
+### 3.22 Super Admin (`/pages/sa-dashboard.html`)
 - **Purpose**: Platform-level administration — create, modify, and deactivate organizations;
   assign Org Admins.
-- **Pages**: `super-admin/sa-portal.html` (login), `super-admin/sa-dashboard.html` (management).
+- **Pages**: `app/login.html` (select role = Super Admin / CEO), `pages/sa-dashboard.html` (management).
 - **Auth**: SA tokens contain `:sa:` in the base64-decoded payload; all SA endpoints verify this.
 - **API**: `POST /api/sa-auth` (SA login), `GET/POST/PUT/DELETE /api/sa-org-admins` (Org Admin CRUD).
 
@@ -285,7 +285,7 @@ in `/functions/api/*.js`. All responses use `Content-Type: application/json`.
 | DELETE | `/api/notifications?id=`     | `functions/api/notifications.js`   | Delete notification              |
 | GET    | `/api/reports`               | `functions/api/reports.js`         | List recent reports              |
 | POST   | `/api/reports`               | `functions/api/reports.js`         | Generate report (queued)         |
-| POST   | `/api/sa-auth`               | `super-admin/functions/api/sa-auth.js` | Super Admin login (SA project only) |
+| POST   | `/api/sa-auth`               | `functions/api/sa-auth.js`             | Super Admin login (3-factor)        |
 | GET    | `/api/sa-org-admins`         | `functions/api/sa-org-admins.js`   | List org admins (SA only)        |
 | POST   | `/api/sa-org-admins`         | `functions/api/sa-org-admins.js`   | Create org admin (SA only)       |
 | PUT    | `/api/sa-org-admins`         | `functions/api/sa-org-admins.js`   | Update org admin (SA only)       |

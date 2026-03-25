@@ -104,7 +104,7 @@ export async function onRequest(context) {
     //     await env.SA_SESSIONS.put('sa:' + token, JSON.stringify({ username, issuedAt }), { expirationTtl: 28800 });
     //   }
 
-    return new Response(JSON.stringify({ ok: true, token, username, role: 'super_admin', permissions: ['*'], issuedAt }), {
+    return new Response(JSON.stringify({ ok: true, token, username, role: 'super_admin', title: 'CEO', permissions: ['*'], issuedAt }), {
       status: 200, headers: corsHeaders,
     });
   }
@@ -147,7 +147,7 @@ export async function onRequest(context) {
     //     if (!sess) return new Response(JSON.stringify({ ok: false, message: 'Invalid or expired session.' }), { status: 401, headers: corsHeaders });
     //   }
 
-    return new Response(JSON.stringify({ ok: true, message: 'Super admin token accepted.', role: 'super_admin' }), {
+    return new Response(JSON.stringify({ ok: true, message: 'Super admin token accepted.', role: 'super_admin', title: 'CEO', permissions: ['*'] }), {
       status: 200, headers: corsHeaders,
     });
   }

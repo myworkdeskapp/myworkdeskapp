@@ -472,13 +472,25 @@
 
       <!-- Heading -->
       <h1 class="form-heading">Welcome Back</h1>
-      <p class="form-sub">Sign in to access your workspace</p>
+      <p class="form-sub">Sign in as Super Admin, Admin, or Employee</p>
 
       <!-- Form -->
       <form id="loginForm" novalidate>
 
-        <!-- Organization ID -->
+        <!-- Access role -->
         <div class="field-group">
+          <label class="field-label" for="loginRole">Access Role</label>
+          <div class="field-input-wrap">
+            <select id="loginRole" name="loginRole" class="field-input" required>
+              <option value="employee">Employee</option>
+              <option value="admin">Admin</option>
+              <option value="super_admin">Super Admin (CEO)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Organization ID -->
+        <div class="field-group role-regular">
           <label class="field-label" for="orgId">Organization ID</label>
           <div class="field-input-wrap">
             <input
@@ -495,7 +507,7 @@
         </div>
 
         <!-- Employee ID -->
-        <div class="field-group">
+        <div class="field-group role-regular">
           <label class="field-label" for="employeeId">Employee ID</label>
           <div class="field-input-wrap">
             <input
@@ -509,6 +521,44 @@
             />
           </div>
           <span class="field-error" id="employeeIdError">Required</span>
+        </div>
+
+        <!-- Super Admin Username -->
+        <div class="field-group role-superadmin" id="saUsernameGroup" style="display:none;">
+          <label class="field-label" for="saUsername">Username</label>
+          <div class="field-input-wrap">
+            <input
+              type="text"
+              id="saUsername"
+              name="saUsername"
+              class="field-input"
+              placeholder="super admin username"
+              autocomplete="username"
+            />
+          </div>
+          <span class="field-error" id="saUsernameError">Required</span>
+        </div>
+
+        <!-- Super Admin Security Key -->
+        <div class="field-group role-superadmin" id="saSecretKeyGroup" style="display:none;">
+          <label class="field-label" for="saSecretKey">Security Key</label>
+          <div class="field-input-wrap">
+            <input
+              type="password"
+              id="saSecretKey"
+              name="saSecretKey"
+              class="field-input pwd-input"
+              placeholder="••••••••••••"
+              autocomplete="off"
+            />
+            <button type="button" class="pwd-eye" id="eyeToggleKey" aria-label="Toggle security key visibility">
+              <svg id="eyeIconKey" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" width="17" height="17">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+            </button>
+          </div>
+          <span class="field-error" id="saSecretKeyError">Required</span>
         </div>
 
         <!-- Password -->
@@ -535,12 +585,18 @@
         </div>
 
         <!-- Demo credentials hint (collapsible) -->
-        <details class="demo-hint">
+        <details class="demo-hint" id="employeeDemoHint">
           <summary>Demo Credentials</summary>
           <div class="hint-body">
             Org ID: <code>DEMO</code> &nbsp;·&nbsp;
             Employee ID: <code>EMP001</code> &nbsp;·&nbsp;
             Password: <code>WorkDesk@2025</code>
+          </div>
+        </details>
+        <details class="demo-hint" id="saHint" style="display:none;">
+          <summary>Super Admin Credentials</summary>
+          <div class="hint-body">
+            Configure in Cloudflare env vars: <code>SA_USERNAME</code>, <code>SA_SECURITY_KEY</code>, <code>SA_PASSWORD</code>
           </div>
         </details>
 
@@ -604,6 +660,14 @@
     // ── Session guard: already logged in → go to dashboard ───────────────────
     (function () {
       try {
+        var saRaw = localStorage.getItem('sa_session');
+        if (saRaw) {
+          var saSess = JSON.parse(saRaw);
+          if (saSess && saSess.token && saSess.role === 'super_admin') {
+            window.location.replace('/pages/sa-dashboard.html');
+            return;
+          }
+        }
         if (localStorage.getItem('workdesk_token')) {
           window.location.replace('/app/dashboard.html');
         }
@@ -657,6 +721,28 @@
       setFieldError('orgId',      'orgIdError',      null);
       setFieldError('employeeId', 'employeeIdError', null);
       setFieldError('password',   'passwordError',   null);
+      setFieldError('saUsername', 'saUsernameError', null);
+      setFieldError('saSecretKey', 'saSecretKeyError', null);
+    }
+
+    function setRoleMode() {
+      var role = (document.getElementById('loginRole') || {}).value || 'employee';
+      var regularFields = document.querySelectorAll('.role-regular');
+      var superFields = document.querySelectorAll('.role-superadmin');
+      var sub = document.querySelector('.form-sub');
+      var employeeHint = document.getElementById('employeeDemoHint');
+      var saHint = document.getElementById('saHint');
+
+      regularFields.forEach(function (el) { el.style.display = role === 'super_admin' ? 'none' : ''; });
+      superFields.forEach(function (el) { el.style.display = role === 'super_admin' ? '' : 'none'; });
+
+      if (sub) {
+        sub.textContent = role === 'super_admin'
+          ? 'Secure CEO/Super Admin access with all permissions'
+          : 'Sign in to access your workspace';
+      }
+      if (employeeHint) employeeHint.style.display = role === 'super_admin' ? 'none' : '';
+      if (saHint) saHint.style.display = role === 'super_admin' ? '' : 'none';
     }
 
     document.getElementById('orgId').addEventListener('input', function () {
@@ -668,6 +754,14 @@
     document.getElementById('password').addEventListener('input', function () {
       setFieldError('password', 'passwordError', null);
     });
+    document.getElementById('saUsername').addEventListener('input', function () {
+      setFieldError('saUsername', 'saUsernameError', null);
+    });
+    document.getElementById('saSecretKey').addEventListener('input', function () {
+      setFieldError('saSecretKey', 'saSecretKeyError', null);
+    });
+    document.getElementById('loginRole').addEventListener('change', setRoleMode);
+    setRoleMode();
 
     // ── Password visibility toggle ────────────────────────────────────────────
     document.getElementById('eyeToggle').addEventListener('click', function () {
@@ -681,10 +775,26 @@
         icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
       }
     });
+    document.getElementById('eyeToggleKey').addEventListener('click', function () {
+      var input  = document.getElementById('saSecretKey');
+      var icon = document.getElementById('eyeIconKey');
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>';
+      } else {
+        input.type = 'password';
+        icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
+      }
+    });
 
     // ── Forgot password ───────────────────────────────────────────────────────
     document.getElementById('forgotLink').addEventListener('click', function (e) {
       e.preventDefault();
+      var role = document.getElementById('loginRole').value;
+      if (role === 'super_admin') {
+        showToast('For Super Admin credential resets, contact platform security support.', false);
+        return;
+      }
       var empId = document.getElementById('employeeId').value.trim();
       if (!empId) {
         setFieldError('employeeId', 'employeeIdError', 'Enter Employee ID first.');
@@ -713,15 +823,68 @@
       clearFieldErrors();
 
       var btn        = document.getElementById('loginBtn');
+      var role       = document.getElementById('loginRole').value;
       var orgId      = document.getElementById('orgId').value.trim();
       var employeeId = document.getElementById('employeeId').value.trim();
       var password   = document.getElementById('password').value;
+      var saUsername = document.getElementById('saUsername').value.trim();
+      var saSecretKey = document.getElementById('saSecretKey').value;
       var valid      = true;
 
-      if (!orgId)      { setFieldError('orgId',      'orgIdError',      'Required'); valid = false; }
-      if (!employeeId) { setFieldError('employeeId', 'employeeIdError', 'Required'); valid = false; }
+      if (role === 'super_admin') {
+        if (!saUsername)  { setFieldError('saUsername', 'saUsernameError', 'Required'); valid = false; }
+        if (!saSecretKey) { setFieldError('saSecretKey', 'saSecretKeyError', 'Required'); valid = false; }
+      } else {
+        if (!orgId)      { setFieldError('orgId',      'orgIdError',      'Required'); valid = false; }
+        if (!employeeId) { setFieldError('employeeId', 'employeeIdError', 'Required'); valid = false; }
+      }
       if (!password)   { setFieldError('password',   'passwordError',   'Required'); valid = false; }
       if (!valid) return;
+
+      var btnLabel = btn.querySelector('.btn-label');
+      if (btnLabel) btnLabel.textContent = 'Signing in\u2026';
+      btn.classList.add('loading');
+      btn.disabled = true;
+
+      var onDone = function () {
+        if (btnLabel) btnLabel.textContent = 'Sign In';
+        btn.classList.remove('loading');
+        btn.disabled = false;
+      };
+
+      if (role === 'super_admin') {
+        fetch('/api/sa-auth', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ username: saUsername, password: password, securityKey: saSecretKey })
+        })
+        .then(function (res) { return res.json().then(function (d) { return { status: res.status, data: d }; }); })
+        .then(function (result) {
+          if (result.data && result.data.ok) {
+            localStorage.removeItem('workdesk_token');
+            localStorage.setItem('sa_token', result.data.token);
+            localStorage.setItem('sa_session', JSON.stringify({
+              token:       result.data.token,
+              username:    result.data.username,
+              role:        'super_admin',
+              title:       'CEO',
+              permissions: ['*'],
+              issuedAt:    Date.now()
+            }));
+            localStorage.setItem('workdesk_role', 'CEO');
+            localStorage.setItem('workdesk_display_name', result.data.username || 'CEO');
+            window.location.replace('/pages/sa-dashboard.html');
+            return;
+          }
+          showToast(result.data && result.data.message ? result.data.message : 'Invalid credentials. Access denied.', true);
+          onDone();
+        })
+        .catch(function () {
+          showToast('Login failed. Please check your connection and try again.', true);
+          onDone();
+        });
+        return;
+      }
 
       // Persist display name derived from employee ID
       var nameParts   = employeeId.split(/[._-]/).filter(function (w) { return w.length > 0; });
@@ -729,16 +892,14 @@
         ? nameParts.map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ')
         : 'Employee ' + employeeId;
       localStorage.setItem('workdesk_display_name', displayName);
-
-      var btnLabel = btn.querySelector('.btn-label');
-      if (btnLabel) btnLabel.textContent = 'Signing in\u2026';
-      btn.classList.add('loading');
-      btn.disabled = true;
+      localStorage.setItem('workdesk_role', role === 'admin' ? 'Admin' : 'Employee');
+      localStorage.removeItem('sa_session');
+      localStorage.removeItem('sa_token');
 
       fetch('/api/auth', {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ orgId: orgId, employeeId: employeeId, password: password })
+        body:    JSON.stringify({ orgId: orgId, employeeId: employeeId, password: password, role: role })
       })
       .then(function (res) { return res.json(); })
       .then(function (data) {
@@ -747,16 +908,12 @@
           window.location.replace('/app/dashboard.html');
         } else {
           showToast(data && data.message ? data.message : 'Invalid credentials. Please try again.', true);
-          if (btnLabel) btnLabel.textContent = 'Sign In';
-          btn.classList.remove('loading');
-          btn.disabled = false;
+          onDone();
         }
       })
       .catch(function () {
         showToast('Login failed. Please check your connection and try again.', true);
-        if (btnLabel) btnLabel.textContent = 'Sign In';
-        btn.classList.remove('loading');
-        btn.disabled = false;
+        onDone();
       });
     });
   </script>

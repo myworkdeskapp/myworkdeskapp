@@ -1,6 +1,6 @@
 # WorkDesk Super Admin — Deployment Guide
 
-The Super Admin Panel (`sa-portal.html` and `sa-dashboard.html`) is deployed as part of the **main WorkDesk Cloudflare Pages project** (`myworkdeskapp`). There is no separate project — everything lives under one deployment.
+The Super Admin Panel (`/app/login.html` with Super Admin role + `/pages/sa-dashboard.html`) is deployed as part of the **main WorkDesk Cloudflare Pages project** (`myworkdeskapp`). There is no separate project — everything lives under one deployment.
 
 ---
 
@@ -8,9 +8,9 @@ The Super Admin Panel (`sa-portal.html` and `sa-dashboard.html`) is deployed as 
 
 Once deployed, the Super Admin Panel is accessible at:
 
-- `https://<your-domain>/pages/sa-login.html` — Login portal
+- `https://<your-domain>/app/login.html` — Unified login portal (choose Super Admin role)
 - `https://<your-domain>/pages/sa-dashboard.html` — Management dashboard
-- `https://<your-domain>/admin/` — Redirects to the login portal
+- `https://<your-domain>/admin/` — Redirects to the unified login portal
 
 > **Tip:** Keep these URLs private. They are not linked from any employee-facing page and include `noindex` meta tags to prevent search engine indexing.
 
@@ -128,7 +128,7 @@ Before going live, ensure:
 → Make sure all three environment variables (`SA_USERNAME`, `SA_SECURITY_KEY`, `SA_PASSWORD`) are set in Cloudflare Pages → Settings → Environment variables and that you redeployed after adding them.
 
 **Background image is missing on the login page**
-→ Ensure `Baground theme login page .png` is present in the **repo root** folder. Cloudflare Pages will serve it alongside `sa-portal.html`.
+→ Ensure `/assets/login-cover-happy.png` is present. The unified login page uses this shared asset.
 
 **`/api/sa-auth` returns 404**
 → The Pages Function in `functions/api/sa-auth.js` was not deployed. Make sure the `functions/` directory is at the repo root and that Wrangler's root directory is set to `/`.

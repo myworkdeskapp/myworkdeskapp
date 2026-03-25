@@ -40,9 +40,9 @@ The `wrangler.jsonc` in the repository root already configures the Worker to ser
 
 > **IMPORTANT — The Root directory must be `/` (the repository root).**
 >
-> Do **NOT** set it to a file path like `/pages/sa-login.html` or a subdirectory like `/app`. The Root directory tells Cloudflare where your project files live inside the Git repository — it must point to the **top-level folder** so that `wrangler.jsonc`, `_redirects`, `_headers`, `functions/`, and all HTML files are found.
+> Do **NOT** set it to a file path like `/app/login.html` or a subdirectory like `/app`. The Root directory tells Cloudflare where your project files live inside the Git repository — it must point to the **top-level folder** so that `wrangler.jsonc`, `_redirects`, `_headers`, `functions/`, and all HTML files are found.
 >
-> ❌ `/pages/sa-login.html` — **wrong** (this is a file, not a directory)  
+> ❌ `/app/login.html` — **wrong** (this is a file, not a directory)  
 > ❌ `/app` — **wrong** (this is a subdirectory, not the project root)  
 > ❌ `/super-admin` — **wrong** (this has a separate wrangler.toml for standalone use)  
 > ✅ `/` — **correct**

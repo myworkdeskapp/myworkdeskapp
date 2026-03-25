@@ -57,7 +57,7 @@ All colours are defined as CSS custom properties in `assets/css/styles.css` unde
 These values are used in `login.html` only, for the glassmorphism card on the background image.
 | Property | Value |
 |---|---|
-| Background image | `Baground theme login page .png` (root-level asset) |
+| Background image | `assets/login-cover-happy.png` |
 | Card background | `rgba(255,255,255,0.22)` with `backdrop-filter: blur(18px)` |
 | Card border | `1px solid rgba(255,255,255,0.4)` |
 | Brand green (login) | `#2e7d6b` (slightly darker than `--primary` for contrast on photo) |
@@ -236,7 +236,7 @@ WorkDesk/
 ├── integrations.html       ← Third-party integrations
 ├── settings.html           ← User profile & platform settings
 ├── auth.js                 ← Shared logout() helper (included on every page)
-├── Baground theme login page .png   ← Login background image
+├── assets/login-cover-happy.png     ← Login background image
 ├── assets/
 │   ├── css/
 │   │   └── styles.css      ← All styles (single stylesheet, CSS variables)

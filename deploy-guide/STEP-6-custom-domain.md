@@ -45,8 +45,8 @@ Once active, all the URLs from Step 5 work the same way with your custom domain:
 
 ```
 https://app.myworkdesk.com/app/login.html
-https://app.myworkdesk.com/pages/sa-login.html
 https://app.myworkdesk.com/app/dashboard.html
+https://app.myworkdesk.com/pages/sa-dashboard.html
 ```
 
 ---

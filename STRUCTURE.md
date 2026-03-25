@@ -4,12 +4,12 @@
 
 ```
 myworkdeskapp/
-├── admin/              Super Admin portal (entry point + headers)
-│   ├── index.html      Entry point — redirects to pages/sa-login.html
+├── admin/              Super Admin aliases (entry point + headers)
+│   ├── index.html      Entry point — redirects to /app/login.html
 │   └── _headers        SA-specific security headers (noindex, no-cache)
 │
-├── app/                Regular user portal
-│   ├── login.html      User login (org ID + employee ID + password)
+├── app/                Unified user portal
+│   ├── login.html      Unified login (Super Admin, Admin, Employee)
 │   ├── dashboard.html  Main dashboard
 │   ├── employees.html  Employee management
 │   ├── attendance.html Attendance & time tracking
@@ -29,9 +29,8 @@ myworkdeskapp/
 │   ├── integrations.html  Third-party integrations
 │   └── settings.html   Settings & configuration
 │
-├── pages/              All pages (regular + SA) — canonical location
+├── pages/              App pages + SA dashboard
 │   ├── login.html      Regular user login (redirects to /app/login.html)
-│   ├── sa-login.html   SA login (username + secret key + password)
 │   ├── sa-dashboard.html SA dashboard & management panel
 │   └── ...             Other pages (redirect to /app/ equivalents)
 │
@@ -93,26 +92,28 @@ myworkdeskapp/
 | Path | Destination |
 |------|-------------|
 | `/` | → `/app/login.html` |
-| `/app/login.html` | Regular user login |
+| `/app/login.html` | Unified login (Super Admin/Admin/Employee) |
 | `/app/dashboard.html` | App dashboard (auth required) |
-| `/pages/sa-login.html` | Super Admin login |
+| `/pages/sa-login.html` | → `/app/login.html` |
 | `/pages/sa-dashboard.html` | SA dashboard (SA token required) |
-| `/admin/` | → `/pages/sa-login.html` |
-| `/admin/login.html` | → `/pages/sa-login.html` |
+| `/admin/` | → `/app/login.html` |
+| `/admin/login.html` | → `/app/login.html` |
 | `/admin/dashboard.html` | → `/pages/sa-dashboard.html` |
 | `/api/auth` | Regular auth endpoint |
 | `/api/sa-auth` | SA auth endpoint |
 
 ## Authentication
 
-### Regular User (`/app/`)
-- Login: Org ID + Employee ID + Password
+### Unified Login (`/app/login.html`)
+- Roles: Super Admin (CEO), Admin, Employee
+- Super Admin Login: Username + Secret Key + Password (`/api/sa-auth`)
+- Admin/Employee Login: Org ID + Employee ID + Password (`/api/auth`)
 - Token: `workdesk_token` in localStorage
 - API: `POST /api/auth`
 - Session guard: checks `localStorage.getItem('workdesk_token')`
 
-### Super Admin (`/pages/sa-login.html`)
-- Login: Username + Secret Key + Password
+### Super Admin (`/pages/sa-dashboard.html`)
+- Login entry: `/app/login.html` (role = Super Admin)
 - Token: `sa_token` in localStorage (base64 `username:sa:timestamp:uuid`)
 - API: `POST /api/sa-auth`
 - Session guard: checks `localStorage.getItem('sa_token')`

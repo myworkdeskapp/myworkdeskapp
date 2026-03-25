@@ -1,17 +1,18 @@
-# ── Super Admin portal → canonical in pages/ ──────────────────
-/admin                         /pages/sa-login.html           302
-/admin/                        /pages/sa-login.html           302
-/admin/login.html              /pages/sa-login.html           301
+# ── Super Admin portal → unified login page ───────────────────
+/admin                         /app/login.html                302
+/admin/                        /app/login.html                302
+/admin/login.html              /app/login.html                301
 /admin/dashboard.html          /pages/sa-dashboard.html       301
 
 # ── Legacy super-admin redirects ──────────────────────────────
-/super-admin/sa-portal.html    /pages/sa-login.html           301
+/super-admin/sa-portal.html    /app/login.html                301
 /super-admin/sa-dashboard.html /pages/sa-dashboard.html       301
-/super-admin/                  /pages/sa-login.html           302
-/super-admin                   /pages/sa-login.html           302
+/super-admin/                  /app/login.html                302
+/super-admin                   /app/login.html                302
 
 # ── Legacy /pages/ redirects (backward compatibility) ─────────
 /pages/login.html              /app/login.html                301
+/pages/sa-login.html           /app/login.html                301
 /pages/dashboard.html          /app/dashboard.html            301
 /pages/employees.html          /app/employees.html            301
 /pages/attendance.html         /app/attendance.html           301

@@ -524,14 +524,14 @@ data, serializes the output, and uploads the file to R2 for download.
 
 ### 22. Super Admin
 
-**Pages:** `super-admin/sa-portal.html`, `super-admin/sa-dashboard.html`
+**Pages:** `app/login.html` (role = Super Admin), `pages/sa-dashboard.html`
 
 Platform-level administration for the WorkDesk owner / CEO. Completely separate from
 Organization Admin access.
 
 | Feature | Description |
 |---|---|
-| SA Login | Separate login page with SA-specific credentials |
+| SA Login | Uses the unified login page (`/app/login.html`) with Super Admin role selected |
 | Organization List | View all organizations on the platform |
 | Create Organization | Add a new org with name, domain, and admin contact |
 | Edit / Deactivate Org | Modify org details or suspend access |
@@ -673,9 +673,7 @@ WorkDesk/
 ├── settings.html                      ← Profile, org config, platform settings
 │
 ├── super-admin/
-│   ├── sa-portal.html                 ← Super Admin login
-│   ├── sa-dashboard.html              ← Super Admin management dashboard
-│   └── _headers                       ← Security headers for SA routes
+│   └── DEPLOY.md                      ← Super Admin deployment notes
 │
 ├── assets/
 │   ├── css/
@@ -834,7 +832,7 @@ This section tracks every Cloudflare binding, secret, and configuration item req
 
 ### WorkDesk App — `myworkdeskapp` (Cloudflare Pages project)
 
-Deploy from the repository **root**. Config: `wrangler.jsonc` / `_headers` / `_redirects`. The Super Admin Panel (`sa-portal.html`, `sa-dashboard.html`, `/api/sa-auth`) is part of this same project.
+Deploy from the repository **root**. Config: `wrangler.jsonc` / `_headers` / `_redirects`. The Super Admin Panel (`/app/login.html` role-based entry, `pages/sa-dashboard.html`, `/api/sa-auth`) is part of this same project.
 
 #### Secrets (set via CLI — never commit)
 
@@ -869,7 +867,7 @@ wrangler secret list --name myworkdeskapp
 | SA org-admin endpoint | ✅ Configured | `GET/POST/PUT/DELETE /api/sa-org-admins` — protected by SA token guard | `functions/api/sa-org-admins.js` |
 | SA config check | ✅ Configured | `GET /api/sa-config-check` — verifies secrets are set | `functions/api/sa-config-check.js` |
 | Security headers | ✅ Configured | `X-Frame-Options: DENY`, `X-Content-Type-Options`, CSP, `X-Robots-Tag: noindex` for SA pages/routes | `_headers` |
-| Login portal | ✅ Configured | Not linked from the app; includes `noindex` meta tag | `sa-portal.html` |
+| Login portal | ✅ Configured | Unified role-based login page for Super Admin/Admin/Employee | `app/login.html` |
 | Dashboard | ✅ Configured | 8-hour session guard; token decoded and username cross-checked on load | `sa-dashboard.html` |
 
 ---
@@ -880,7 +878,7 @@ The SA panel is protected at multiple layers to ensure it is **never publicly vi
 
 1. **No public links** — The main app does not link to the SA panel URL anywhere.
 2. **`noindex` meta + `X-Robots-Tag`** — Search engines are instructed not to index any SA page or endpoint.
-3. **Login wall** — `sa-portal.html` gates all access. `sa-dashboard.html` immediately redirects to the portal if no valid session is found.
+3. **Login wall** — Super Admin access starts at `/app/login.html` (role = Super Admin). `sa-dashboard.html` immediately redirects to `/app/login.html` if no valid session is found.
 4. **3-factor credentials** — Login requires `SA_USERNAME`, `SA_SECURITY_KEY`, and `SA_PASSWORD` simultaneously, all stored as encrypted Cloudflare secrets (never in source code).
 5. **Timing-safe comparison** — All credential checks use HMAC-based constant-time comparison to prevent timing attacks.
 6. **Token username verification** — `GET /api/sa-auth` and every request to `/api/sa-org-admins` decode the token and verify the embedded username against `env.SA_USERNAME`, preventing forged tokens.

@@ -1956,7 +1956,7 @@ wrangler secret put SA_PASSWORD     --name myworkdeskapp</pre>
 <script>
   // ── Session guard ────────────────────────────────────────────────────────
   (function () {
-    var LOGIN_URL = '/pages/sa-login.html';
+    var LOGIN_URL = '/app/login.html';
     var raw = localStorage.getItem('sa_session');
     if (!raw) { window.location.replace(LOGIN_URL); return; }
     try {
@@ -2145,7 +2145,7 @@ wrangler secret put SA_PASSWORD     --name myworkdeskapp</pre>
     showConfirmModal('Sign out of the Super Admin Console? Your session will be terminated.', function () {
       localStorage.removeItem('sa_session');
       localStorage.removeItem('sa_token');
-      window.location.replace('/pages/sa-login.html');
+      window.location.replace('/app/login.html');
     });
   });
 
