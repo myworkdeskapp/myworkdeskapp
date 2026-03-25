@@ -81,7 +81,7 @@ myworkdeskapp/
 ├── index.html          Root entry — redirects to /app/login.html
 ├── _redirects          URL routing & backward-compat redirects
 ├── _headers            Global security headers
-├── wrangler.jsonc      Cloudflare Workers/Pages config
+├── wrangler.jsonc      Cloudflare Pages config (project: myworkdeskapp)
 ├── STRUCTURE.md        This file
 ├── FEATURES.md         Feature reference & API endpoints
 ├── DESIGN_SYSTEM.md    Design tokens, colors, typography

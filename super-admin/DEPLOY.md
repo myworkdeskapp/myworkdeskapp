@@ -8,14 +8,19 @@ The Super Admin Panel (`sa-portal.html` and `sa-dashboard.html`) is deployed as 
 
 Once deployed, the Super Admin Panel is accessible at:
 
-- `https://<your-domain>/super-admin/sa-portal.html` — Login portal
-- `https://<your-domain>/super-admin/sa-dashboard.html` — Management dashboard
+- `https://<your-domain>/pages/sa-login.html` — Login portal
+- `https://<your-domain>/pages/sa-dashboard.html` — Management dashboard
+- `https://<your-domain>/admin/` — Redirects to the login portal
 
 > **Tip:** Keep these URLs private. They are not linked from any employee-facing page and include `noindex` meta tags to prevent search engine indexing.
 
 ---
 
 ## Deploying the Main Project
+
+The root `wrangler.jsonc` is the single Cloudflare configuration file for the
+entire project (named `myworkdeskapp`). There is no separate wrangler config for
+the super-admin — it is part of the same deployment.
 
 From the **root** of the WorkDesk repository:
 

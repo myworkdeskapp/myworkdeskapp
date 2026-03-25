@@ -23,6 +23,10 @@
   X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
   Cache-Control: no-store, no-cache, must-revalidate
 
+/super-admin/*
+  X-Robots-Tag: noindex, nofollow, noarchive, nosnippet
+  Cache-Control: no-store, no-cache, must-revalidate
+
 /api/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store, no-cache, must-revalidate
