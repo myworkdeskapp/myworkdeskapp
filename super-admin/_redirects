@@ -1,14 +1,15 @@
 # Super Admin — Cloudflare Pages routing rules
 #
-# Root URL (/): redirect to the login portal.
+# Root URL (/): served by index.html (the SA login page) automatically.
 # /app/login paths: redirect to the SA login so users who land on the
 #   regular-app login URL on this domain are sent to the correct page.
-# Any route that doesn't match a static file falls back to sa-portal.html
+# /sa-portal.html: legacy alias kept for backward compatibility.
+# Any route that doesn't match a static file falls back to index.html
 # so that direct links to /sa-dashboard.html still work while unknown paths
 # land on the login page instead of triggering a file download.
 
-/                  /sa-portal.html  302
-/app/login         /sa-portal.html  302
-/app/login.html    /sa-portal.html  302
-/login             /sa-portal.html  302
-/login.html        /sa-portal.html  302
+/sa-portal.html    /index.html      301
+/app/login         /index.html      302
+/app/login.html    /index.html      302
+/login             /index.html      302
+/login.html        /index.html      302
