@@ -270,6 +270,9 @@
 
     .bottom-links a:hover { text-decoration: underline; }
 
+    #saToggleLink { color: #6B7280; font-weight: 500; font-size: 12px; }
+    #saToggleLink:hover { color: var(--primary-dark); }
+
     /* ======= RIGHT: IMAGE PANEL ======= */
     .image-panel {
       flex: 1;
@@ -615,7 +618,7 @@
       <!-- Bottom links -->
       <div class="bottom-links">
         <span>Need help? <a href="#forgot" id="forgotLink">Forgot Password?</a></span>
-        <a href="#terms" id="termsLink">Terms &amp; Conditions</a>
+        <a href="#" id="saToggleLink" aria-label="Switch to Super Admin login">Super Admin Login</a>
       </div>
 
     </div>
@@ -853,10 +856,19 @@
       showToast('Microsoft SSO is configured via your Cloudflare Access policy.', false);
     });
 
-    // ── Terms & Conditions link ───────────────────────────────────────────────
-    document.getElementById('termsLink').addEventListener('click', function (e) {
+        // ── Super Admin toggle link ───────────────────────────────────────────────
+    document.getElementById('saToggleLink').addEventListener('click', function (e) {
       e.preventDefault();
-      showToast('Organization registration is coming soon. Contact the WorkDesk team to get started.', false);
+      var roleInput = document.getElementById('loginRole');
+      if (roleInput.value === 'super_admin') {
+        roleInput.value = 'employee';
+      } else {
+        roleInput.value = 'super_admin';
+      }
+      setRoleMode();
+      // Update toggle link text
+      document.getElementById('saToggleLink').textContent =
+        roleInput.value === 'super_admin' ? '← Back to Regular Login' : 'Super Admin Login';
     });
 
     // ── Login form submit ─────────────────────────────────────────────────────

@@ -133,4 +133,4 @@ myworkdeskapp/
 - Token: `sa_token` in localStorage (base64 `username:sa:timestamp:uuid`)
 - API: `POST /api/sa-auth`
 - Session guard: checks `localStorage.getItem('sa_token')`
-- Credentials set via env vars: `SA_USERNAME`, `SA_SECURITY_KEY` (+ optional `SA_EMPLOYEE_ID`, legacy `SA_PASSWORD`)
+- Credentials set via env vars: `SA_USERNAME`, `SA_SECURITY_KEY`, `SA_PASSWORD` — all three are **required**

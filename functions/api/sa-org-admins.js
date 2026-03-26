@@ -78,7 +78,7 @@ export async function onRequest(context) {
   }
 
   // Cross-check the username embedded in the token against the configured SA_USERNAME
-  const saConfiguredUsername = env.SA_USERNAME || '';
+  const saConfiguredUsername = (env.SA_USERNAME || '').trim();
   if (saConfiguredUsername && !(await safeEqual(tokenUsername, saConfiguredUsername))) {
     return new Response(JSON.stringify({ ok: false, message: 'Invalid or expired session token.' }), {
       status: 401, headers: corsHeaders,

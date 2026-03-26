@@ -67,13 +67,18 @@ export async function onRequest(context) {
       });
     }
 
-    const saUsername    = env.SA_USERNAME     || '';
-    const saSecurityKey = env.SA_SECURITY_KEY || '';
-    const saPassword    = env.SA_PASSWORD     || '';
+    const saUsername    = (env.SA_USERNAME     || '').trim();
+    const saSecurityKey = (env.SA_SECURITY_KEY || '').trim();
+    const saPassword    = (env.SA_PASSWORD     || '').trim();
 
     // Credentials must be configured in environment variables
     if (!saUsername || !saSecurityKey || !saPassword) {
-      return new Response(JSON.stringify({ ok: false, message: 'Super admin access is not configured.' }), {
+      const missing = [
+        !saUsername    && 'SA_USERNAME',
+        !saSecurityKey && 'SA_SECURITY_KEY',
+        !saPassword    && 'SA_PASSWORD',
+      ].filter(Boolean).join(', ');
+      return new Response(JSON.stringify({ ok: false, message: `Super admin access is not configured. Missing: ${missing}` }), {
         status: 503, headers: corsHeaders,
       });
     }
@@ -135,7 +140,7 @@ export async function onRequest(context) {
     }
 
     // Cross-check the username in the token against the configured SA_USERNAME
-    const saUsername = env.SA_USERNAME || '';
+    const saUsername = (env.SA_USERNAME || '').trim();
     if (saUsername && !(await safeEqual(tokenUsername, saUsername))) {
       return new Response(JSON.stringify({ ok: false, message: 'Invalid or expired session token.' }), {
         status: 401, headers: corsHeaders,
