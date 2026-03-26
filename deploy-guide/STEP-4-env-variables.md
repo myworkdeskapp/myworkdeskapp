@@ -17,7 +17,7 @@ On the **Build settings** page scroll down to the **Environment variables (advan
 
 ## Required Variables
 
-### Super-Admin Portal (`/admin`)
+### Super-Admin Portal (`/admin/login.html`)
 
 | Variable          | Value (your choice)          | Encrypt? |
 |-------------------|------------------------------|----------|
@@ -25,7 +25,23 @@ On the **Build settings** page scroll down to the **Environment variables (advan
 | `SA_SECURITY_KEY` | e.g. `sk_yourSecretKey123`   | ✅ Yes   |
 | `SA_PASSWORD`     | e.g. `Admin@StrongPass1`     | ✅ Yes   |
 
-### Demo / Regular Login (`/app/login.html`)
+### Admin Login (`/app/login.html` — Org ID + Employee ID + Password)
+
+Set these to create a dedicated **Admin** account on the regular login page.  
+The server always returns `role: admin` when these credentials match, regardless of the
+Employee ID value.  Using a prefix of `ADMIN` or `ADM` (e.g. `ADMIN-01`, `ADM001`) is
+**recommended** so the login form automatically shows the admin UI as you type.
+
+| Variable            | Value (your choice)          | Encrypt? |
+|---------------------|------------------------------|----------|
+| `ADMIN_ORG_ID`      | e.g. `acme-corp`             | No       |
+| `ADMIN_EMPLOYEE_ID` | e.g. `ADMIN-01`              | No       |
+| `ADMIN_PASSWORD`    | your strong admin password   | ✅ Yes   |
+
+> When all three `ADMIN_*` variables are set, the API always returns `role: admin` for
+> those credentials — regardless of what the browser sends — preventing role escalation.
+
+### Demo / Regular Employee Login (`/app/login.html`)
 
 | Variable           | Value           | Encrypt? |
 |--------------------|-----------------|----------|

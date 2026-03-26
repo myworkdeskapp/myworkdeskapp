@@ -72,16 +72,25 @@ Open each URL below and verify it loads correctly:
 
 ## 4. Quick Login Test
 
-**Regular login** (`/app/login.html`):
-- Org ID: `DEMO`
-- Employee ID: `EMP001`
-- Password: whatever you set in `DEMO_PASSWORD` env var
+**Regular employee login** (`/app/login.html`):
+- Org ID: value of `DEMO_ORG_ID` env var (default: `DEMO`)
+- Employee ID: value of `DEMO_EMPLOYEE_ID` env var (default: `EMP001`)
+- Password: value of `DEMO_PASSWORD` env var
 
-**Admin/Super Admin login** (`/app/login.html`):
-- Role: `Admin` or `Super Admin (CEO)` as needed
-- Username: value of `SA_USERNAME`
-- Secret Key: value of `SA_SECURITY_KEY`
-- Password: value of `SA_PASSWORD`
+**Admin login** (`/app/login.html`):
+- Org ID: value of `ADMIN_ORG_ID` env var (e.g. `acme-corp`)
+- Employee ID: value of `ADMIN_EMPLOYEE_ID` env var (e.g. `ADMIN-01`)
+- Password: value of `ADMIN_PASSWORD` env var
+
+> **Tip:** If the `ADMIN_EMPLOYEE_ID` starts with `ADMIN` or `ADM` (e.g. `ADMIN-01`),
+> the login page automatically shows the admin UI before you even submit — but this is
+> cosmetic only.  The server always enforces `role: admin` for matching `ADMIN_*`
+> credentials regardless of what the browser detects.
+
+**Super Admin login** (`/app/login.html` — switches to a 2-field form automatically):
+- Employee ID / Username: value of `SA_USERNAME` env var
+- Passkey: value of `SA_PASSWORD` env var  
+  *(enter an Employee ID starting with `SA`, `SUPER`, or `CEO` to reveal the Super Admin form)*
 
 ---
 

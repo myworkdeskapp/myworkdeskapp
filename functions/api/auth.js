@@ -56,10 +56,11 @@ export async function onRequest(context) {
     }
 
     const isProduction = String(env.ENVIRONMENT || '').toLowerCase() === 'production';
-    const hasDemoEnv = Boolean(env.DEMO_ORG_ID && env.DEMO_EMPLOYEE_ID && env.DEMO_PASSWORD);
+    const hasDemoEnv  = Boolean(env.DEMO_ORG_ID && env.DEMO_EMPLOYEE_ID && env.DEMO_PASSWORD);
+    const hasAdminEnv = Boolean(env.ADMIN_ORG_ID && env.ADMIN_EMPLOYEE_ID && env.ADMIN_PASSWORD);
 
-    // In production, require explicit credentials and reject known public defaults.
-    if (isProduction && !hasDemoEnv) {
+    // In production, require at least one explicit credential set.
+    if (isProduction && !hasDemoEnv && !hasAdminEnv) {
       return json({ ok: false, message: 'Authentication is not configured for production.' }, 503);
     }
 
@@ -72,6 +73,26 @@ export async function onRequest(context) {
       return json({ ok: false, message: 'Default demo credentials are blocked in production.' }, 503);
     }
 
+    // ── Admin credential check (ADMIN_ORG_ID / ADMIN_EMPLOYEE_ID / ADMIN_PASSWORD) ──
+    //
+    // Set these three env vars in Cloudflare Pages to enable a dedicated admin
+    // account that is completely independent of the demo/employee credentials.
+    // When they match, the API always returns role: 'admin' regardless of what
+    // the client sent, preventing role-escalation via the request body.
+    if (hasAdminEnv) {
+      const adminValid =
+        await safeEqual(orgId, env.ADMIN_ORG_ID) &&
+        await safeEqual(employeeId, env.ADMIN_EMPLOYEE_ID) &&
+        await safeEqual(password, env.ADMIN_PASSWORD);
+
+      if (adminValid) {
+        const token = btoa(orgId + ':' + employeeId + ':' + Date.now());
+        return json({ ok: true, token, orgId, employeeId, role: 'admin' });
+      }
+    }
+
+    // ── Demo / employee credential check ─────────────────────────────────────
+    //
     // Resolve credentials: use explicit env vars in production; keep built-in
     // defaults for local evaluation/staging only.
     //
@@ -80,9 +101,9 @@ export async function onRequest(context) {
     //     Cloudflare Pages project settings before handling real user data.
     //     The built-in defaults are public knowledge and must not be used in
     //     a live deployment with real employees or sensitive information.
-    const demoOrgId = isProduction ? env.DEMO_ORG_ID : (env.DEMO_ORG_ID || 'DEMO');
+    const demoOrgId      = isProduction ? env.DEMO_ORG_ID      : (env.DEMO_ORG_ID      || 'DEMO');
     const demoEmployeeId = isProduction ? env.DEMO_EMPLOYEE_ID : (env.DEMO_EMPLOYEE_ID || 'EMP001');
-    const demoPassword = isProduction ? env.DEMO_PASSWORD : (env.DEMO_PASSWORD || 'WorkDesk@2025');
+    const demoPassword   = isProduction ? env.DEMO_PASSWORD    : (env.DEMO_PASSWORD    || 'WorkDesk@2025');
     const valid =
       await safeEqual(orgId, demoOrgId) &&
       await safeEqual(employeeId, demoEmployeeId) &&

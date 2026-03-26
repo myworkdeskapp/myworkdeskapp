@@ -941,7 +941,6 @@
         ? nameParts.map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(' ')
         : 'Employee ' + employeeId;
       localStorage.setItem('workdesk_display_name', displayName);
-      localStorage.setItem('workdesk_role', role === 'admin' ? 'Admin' : 'Employee');
       localStorage.removeItem('sa_session');
       localStorage.removeItem('sa_token');
 
@@ -954,6 +953,11 @@
       .then(function (data) {
         if (data && data.ok) {
           if (data.token) localStorage.setItem('workdesk_token', data.token);
+          // Use the server-returned role as the source of truth so that
+          // server-enforced roles (e.g. ADMIN_* env var credentials) are
+          // always reflected correctly regardless of Employee ID prefix.
+          var confirmedRole = (data.role || role || 'employee').toLowerCase();
+          localStorage.setItem('workdesk_role', confirmedRole === 'admin' ? 'Admin' : 'Employee');
           window.location.replace('/app/dashboard.html');
         } else {
           showToast(data && data.message ? data.message : 'Invalid credentials. Please try again.', true);
