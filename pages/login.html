@@ -37,9 +37,12 @@
       width: 940px;
       max-width: 100%;
       min-height: 600px;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.22);
       border-radius: 24px;
       box-shadow: 0 24px 64px rgba(0, 0, 0, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
       display: flex;
       overflow: hidden;
     }
@@ -50,7 +53,7 @@
       display: flex;
       flex-direction: column;
       padding: 44px 48px 36px;
-      background: #fff;
+      background: rgba(255, 255, 255, 0.68);
     }
 
     /* ── Logo pill ─────── */
@@ -285,11 +288,22 @@
       border-radius: 0 20px 20px 0;
     }
 
+    .image-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(1.5px) saturate(120%);
+      -webkit-backdrop-filter: blur(1.5px) saturate(120%);
+      pointer-events: none;
+    }
+
     .panel-photo {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
+      opacity: 0.85;
     }
 
     /* ── Calendar strip (lower area of image) ─────── */
@@ -371,26 +385,35 @@
 
     /* ======= RESPONSIVE ======= */
     @media (max-width: 720px) {
-      body { padding: 0; align-items: stretch; }
+      body {
+        padding: 0;
+        align-items: stretch;
+        background:
+          linear-gradient(rgba(13, 31, 24, 0.45), rgba(13, 31, 24, 0.45)),
+          url('/assets/login-cover-happy.png') center center / cover no-repeat;
+      }
 
       .login-card {
         flex-direction: column;
         border-radius: 0;
         min-height: 100vh;
         box-shadow: none;
+        background: transparent;
       }
 
       .form-panel {
         flex: none;
         padding: 40px 28px 32px;
         order: 1;
+        background: rgba(255, 255, 255, 0.78);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 16px 16px 0 0;
+        margin-top: auto;
       }
 
       .image-panel {
-        flex: none;
-        height: 220px;
-        border-radius: 0;
-        order: 0;
+        display: none;
       }
 
       .float-card-cal { display: none; }
