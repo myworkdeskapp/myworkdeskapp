@@ -2,16 +2,22 @@
  * WorkDesk — /api/sa-config-check
  * Cloudflare Pages Function (main app project)
  *
- * GET /api/sa-config-check — Verify that the three required SA secret
- * environment variables are present and non-empty.
+ * GET /api/sa-config-check — Verify that environment variables are present
+ * and non-empty for super admin, demo, and admin roles.
  *
- * Required environment variables (checked, never revealed):
- *   SA_USERNAME     — Super admin username
- *   SA_SECURITY_KEY — Super admin security key (second factor)
- *   SA_PASSWORD     — Super admin password
+ * Checked environment variables (presence only — values are never revealed):
+ *   SA_USERNAME       — Super admin username
+ *   SA_SECURITY_KEY   — Super admin security key (second factor)
+ *   SA_PASSWORD       — Super admin password
+ *   DEMO_ORG_ID       — Demo / employee login org ID (default: DEMO)
+ *   DEMO_EMPLOYEE_ID  — Demo employee ID (default: EMP001)
+ *   DEMO_PASSWORD     — Demo / employee login password
+ *   ADMIN_ORG_ID      — Admin login org ID override (defaults to DEMO_ORG_ID)
+ *   ADMIN_EMPLOYEE_ID — Admin employee ID strict match (optional)
+ *   ADMIN_PASSWORD    — Admin login password override (defaults to DEMO_PASSWORD)
  *
  * All requests require a valid SA Bearer token so that the presence/absence
- * of each secret is never exposed to unauthenticated callers.
+ * of each variable is never exposed to unauthenticated callers.
  */
 
 export async function onRequest(context) {
@@ -95,18 +101,30 @@ export async function onRequest(context) {
     });
   }
 
-  // ── Check which secrets are configured ──────────────────────────────────
+  // ── Check which variables are configured ────────────────────────────────
   const secrets = {
-    SA_USERNAME:     !!(env.SA_USERNAME     && env.SA_USERNAME.trim()),
-    SA_SECURITY_KEY: !!(env.SA_SECURITY_KEY && env.SA_SECURITY_KEY.trim()),
-    SA_PASSWORD:     !!(env.SA_PASSWORD     && env.SA_PASSWORD.trim()),
+    SA_USERNAME:       !!(env.SA_USERNAME      && env.SA_USERNAME.trim()),
+    SA_SECURITY_KEY:   !!(env.SA_SECURITY_KEY  && env.SA_SECURITY_KEY.trim()),
+    SA_PASSWORD:       !!(env.SA_PASSWORD      && env.SA_PASSWORD.trim()),
+    DEMO_ORG_ID:       !!(env.DEMO_ORG_ID      && env.DEMO_ORG_ID.trim()),
+    DEMO_EMPLOYEE_ID:  !!(env.DEMO_EMPLOYEE_ID && env.DEMO_EMPLOYEE_ID.trim()),
+    DEMO_PASSWORD:     !!(env.DEMO_PASSWORD    && env.DEMO_PASSWORD.trim()),
+    ADMIN_ORG_ID:      !!(env.ADMIN_ORG_ID     && env.ADMIN_ORG_ID.trim()),
+    ADMIN_EMPLOYEE_ID: !!(env.ADMIN_EMPLOYEE_ID && env.ADMIN_EMPLOYEE_ID.trim()),
+    ADMIN_PASSWORD:    !!(env.ADMIN_PASSWORD   && env.ADMIN_PASSWORD.trim()),
   };
 
-  const allConfigured = secrets.SA_USERNAME && secrets.SA_SECURITY_KEY && secrets.SA_PASSWORD;
+  const saConfigured   = secrets.SA_USERNAME && secrets.SA_SECURITY_KEY && secrets.SA_PASSWORD;
+  const demoConfigured = secrets.DEMO_ORG_ID && secrets.DEMO_EMPLOYEE_ID && secrets.DEMO_PASSWORD;
+  const adminConfigured = secrets.ADMIN_ORG_ID && secrets.ADMIN_PASSWORD;
+  const allConfigured  = saConfigured && demoConfigured && adminConfigured;
 
   return new Response(JSON.stringify({
     ok: true,
     allConfigured,
+    saConfigured,
+    demoConfigured,
+    adminConfigured,
     secrets,
   }), { status: 200, headers: corsHeaders });
 }

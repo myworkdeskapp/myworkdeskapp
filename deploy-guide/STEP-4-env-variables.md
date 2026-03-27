@@ -56,6 +56,20 @@ The login page uses a **2-step flow**:
 > If you skip `DEMO_ORG_ID` / `DEMO_EMPLOYEE_ID`, they default to `DEMO` and `EMP001`.  
 > If you skip `DEMO_PASSWORD`, the hardcoded default in `functions/api/auth.js` will be used — **not recommended for production**.
 
+### Admin Login (`/app/login.html` — Admin role)
+
+Admin users enter an Employee ID starting with `ADMIN-` or `ADM-`. The backend checks these variables:
+
+| Variable             | Value                                          | Encrypt? |
+|----------------------|------------------------------------------------|----------|
+| `ADMIN_ORG_ID`       | Admin org ID (defaults to `DEMO_ORG_ID`)       | No       |
+| `ADMIN_EMPLOYEE_ID`  | Admin employee ID for strict match (optional)  | No       |
+| `ADMIN_PASSWORD`     | Admin password (defaults to `DEMO_PASSWORD`)   | ✅ Yes   |
+
+> If `ADMIN_ORG_ID` / `ADMIN_PASSWORD` are not set they fall back to the demo values.  
+> `ADMIN_EMPLOYEE_ID` is optional: when set, only that exact employee ID is accepted for admin login.  
+> Set dedicated `ADMIN_*` values for any non-development deployment so admins and employees use different credentials.
+
 ---
 
 ## How to Edit Variables After Deployment

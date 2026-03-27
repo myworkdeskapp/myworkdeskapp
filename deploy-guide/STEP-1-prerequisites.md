@@ -17,16 +17,19 @@ Before you deploy, make sure you have the following ready.
 
 You will need to set these as environment variables during setup:
 
-| Variable            | What it is                                      | Example value  |
-|---------------------|-------------------------------------------------|----------------|
-| `SA_USERNAME`       | Super-admin username                            | `superadmin`   |
-| `SA_SECURITY_KEY`   | Super-admin secret key                          | `yourkey123`   |
-| `SA_PASSWORD`       | Super-admin password                            | `StrongPass!`  |
-| `DEMO_ORG_ID`       | Demo org ID for regular login (default: DEMO)   | `DEMO`         |
-| `DEMO_EMPLOYEE_ID`  | Demo employee ID (default: EMP001)              | `EMP001`       |
-| `DEMO_PASSWORD`     | Demo login password                             | `demo1234`     |
+| Variable             | What it is                                             | Example value  |
+|----------------------|--------------------------------------------------------|----------------|
+| `SA_USERNAME`        | Super-admin username                                   | `superadmin`   |
+| `SA_SECURITY_KEY`    | Super-admin secret key                                 | `SA-key123`    |
+| `SA_PASSWORD`        | Super-admin password                                   | `StrongPass!`  |
+| `DEMO_ORG_ID`        | Demo / employee org ID (default: DEMO)                 | `DEMO`         |
+| `DEMO_EMPLOYEE_ID`   | Demo employee ID (default: EMP001)                     | `EMP001`       |
+| `DEMO_PASSWORD`      | Demo / employee login password                         | `demo1234`     |
+| `ADMIN_ORG_ID`       | Admin login org ID (defaults to DEMO_ORG_ID)           | `DEMO`         |
+| `ADMIN_EMPLOYEE_ID`  | Admin employee ID strict match (optional)              | `ADMIN-001`    |
+| `ADMIN_PASSWORD`     | Admin login password (defaults to DEMO_PASSWORD)       | `Admin@Pass1`  |
 
-> **Note:** If you skip the DEMO_* variables, the defaults (`DEMO` / `EMP001` / the default password) will be used automatically. The SA_* variables are required if you want the admin portal to work.
+> **Note:** If you skip the `DEMO_*` variables, the defaults (`DEMO` / `EMP001` / the default password) will be used automatically. The `SA_*` variables are required for the super-admin portal. The `ADMIN_*` variables are recommended so admins and employees use separate credentials.
 
 ---
 

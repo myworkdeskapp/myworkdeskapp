@@ -1599,39 +1599,73 @@
         <div class="grid-2">
           <div class="content-card">
             <div class="content-card-header">
-              <h3>Super Admin Credentials</h3>
+              <h3>Credential Variables</h3>
               <button class="card-action" id="checkSecretsBtn" onclick="checkSecretsConfig()">Check Configuration</button>
             </div>
             <div style="padding:20px;display:flex;flex-direction:column;gap:14px">
               <div style="background:var(--sa-surface2);border:1px solid var(--sa-border);border-radius:8px;padding:14px 16px;font-size:13px;color:var(--sa-text-muted);line-height:1.6">
-                Super admin credentials (username, security key, and password) are managed via platform environment variables: <strong style="color:var(--sa-green-dk)">SA_USERNAME</strong>, <strong style="color:var(--sa-green-dk)">SA_SECURITY_KEY</strong>, and <strong style="color:var(--sa-green-dk)">SA_PASSWORD</strong>. To rotate credentials, update these variables in your Cloudflare Pages project settings and redeploy.
+                Super admin, demo, and admin credentials are managed via Cloudflare Pages environment variables. Super admin secrets: <strong style="color:var(--sa-green-dk)">SA_USERNAME</strong>, <strong style="color:var(--sa-green-dk)">SA_SECURITY_KEY</strong>, <strong style="color:var(--sa-green-dk)">SA_PASSWORD</strong>. Demo/employee login: <strong style="color:var(--sa-green-dk)">DEMO_ORG_ID</strong>, <strong style="color:var(--sa-green-dk)">DEMO_EMPLOYEE_ID</strong>, <strong style="color:var(--sa-green-dk)">DEMO_PASSWORD</strong>. Admin login: <strong style="color:var(--sa-green-dk)">ADMIN_ORG_ID</strong>, <strong style="color:var(--sa-green-dk)">ADMIN_PASSWORD</strong> (and optionally <strong style="color:var(--sa-green-dk)">ADMIN_EMPLOYEE_ID</strong>). To rotate, update these in your Cloudflare Pages project settings and redeploy.
               </div>
 
-              <!-- ── Secret configuration status ─────────────────────────── -->
               <div id="secretsStatusBox" style="display:none;background:var(--sa-surface2);border:1px solid var(--sa-border);border-radius:8px;overflow:hidden">
-                <div style="padding:10px 16px;border-bottom:1px solid var(--sa-border);font-size:11px;font-weight:700;color:var(--sa-text-muted);letter-spacing:0.06em;text-transform:uppercase">Cloudflare Secret Variables</div>
+                <div style="padding:10px 16px;border-bottom:1px solid var(--sa-border);font-size:11px;font-weight:700;color:var(--sa-text-muted);letter-spacing:0.06em;text-transform:uppercase">Super Admin Secrets</div>
                 <div style="padding:8px 0">
                   <div class="activity-item" style="padding:8px 16px">
-                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:160px">SA_USERNAME</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">SA_USERNAME</div>
                     <span id="secretStatus_SA_USERNAME" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
                   </div>
                   <div class="activity-item" style="padding:8px 16px">
-                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:160px">SA_SECURITY_KEY</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">SA_SECURITY_KEY</div>
                     <span id="secretStatus_SA_SECURITY_KEY" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
                   </div>
                   <div class="activity-item" style="padding:8px 16px">
-                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:160px">SA_PASSWORD</div>
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">SA_PASSWORD</div>
                     <span id="secretStatus_SA_PASSWORD" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
                   </div>
                 </div>
+                <div style="padding:10px 16px;border-top:1px solid var(--sa-border);border-bottom:1px solid var(--sa-border);font-size:11px;font-weight:700;color:var(--sa-text-muted);letter-spacing:0.06em;text-transform:uppercase">Demo / Employee Variables</div>
+                <div style="padding:8px 0">
+                  <div class="activity-item" style="padding:8px 16px">
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">DEMO_ORG_ID</div>
+                    <span id="secretStatus_DEMO_ORG_ID" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
+                  </div>
+                  <div class="activity-item" style="padding:8px 16px">
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">DEMO_EMPLOYEE_ID</div>
+                    <span id="secretStatus_DEMO_EMPLOYEE_ID" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
+                  </div>
+                  <div class="activity-item" style="padding:8px 16px">
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">DEMO_PASSWORD</div>
+                    <span id="secretStatus_DEMO_PASSWORD" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
+                  </div>
+                </div>
+                <div style="padding:10px 16px;border-top:1px solid var(--sa-border);border-bottom:1px solid var(--sa-border);font-size:11px;font-weight:700;color:var(--sa-text-muted);letter-spacing:0.06em;text-transform:uppercase">Admin Variables</div>
+                <div style="padding:8px 0">
+                  <div class="activity-item" style="padding:8px 16px">
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">ADMIN_ORG_ID</div>
+                    <span id="secretStatus_ADMIN_ORG_ID" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
+                  </div>
+                  <div class="activity-item" style="padding:8px 16px">
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">ADMIN_EMPLOYEE_ID</div>
+                    <span id="secretStatus_ADMIN_EMPLOYEE_ID" class="badge" style="margin-left:auto"><span class="dot"></span>— <span style="font-size:10px;opacity:0.7">(optional)</span></span>
+                  </div>
+                  <div class="activity-item" style="padding:8px 16px">
+                    <div style="font-size:13px;font-weight:600;color:var(--sa-text);font-family:monospace;min-width:180px">ADMIN_PASSWORD</div>
+                    <span id="secretStatus_ADMIN_PASSWORD" class="badge" style="margin-left:auto"><span class="dot"></span>—</span>
+                  </div>
+                </div>
                 <div id="secretsStatusSummary" style="padding:10px 16px;border-top:1px solid var(--sa-border);font-size:12px;color:var(--sa-text-muted)"></div>
-                <!-- ── Fix commands (shown only when any secret is missing) ── -->
+                <!-- ── Fix commands (shown only when any variable is missing) ── -->
                 <div id="secretsFixCommands" style="display:none;padding:12px 16px;border-top:1px solid var(--sa-border);background:var(--sa-red-soft)">
-                  <div style="font-size:11px;font-weight:700;color:var(--sa-red);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px">Run these commands to set the missing secrets</div>
-                  <pre style="font-size:11px;color:var(--sa-text-muted);line-height:1.8;background:var(--sa-surface);border:1px solid var(--sa-border);border-radius:6px;padding:10px 12px;overflow-x:auto;margin:0">wrangler secret put SA_USERNAME     --name myworkdeskapp
-wrangler secret put SA_SECURITY_KEY --name myworkdeskapp
-wrangler secret put SA_PASSWORD     --name myworkdeskapp</pre>
-                  <div style="font-size:11px;color:var(--sa-text-muted);margin-top:8px">Enter each value when prompted, then redeploy the project.</div>
+                  <div style="font-size:11px;font-weight:700;color:var(--sa-red);letter-spacing:0.05em;text-transform:uppercase;margin-bottom:8px">Run these commands to set the missing variables</div>
+                  <pre style="font-size:11px;color:var(--sa-text-muted);line-height:1.8;background:var(--sa-surface);border:1px solid var(--sa-border);border-radius:6px;padding:10px 12px;overflow-x:auto;margin:0">wrangler secret put SA_USERNAME      --name myworkdeskapp
+wrangler secret put SA_SECURITY_KEY  --name myworkdeskapp
+wrangler secret put SA_PASSWORD      --name myworkdeskapp
+wrangler secret put DEMO_ORG_ID      --name myworkdeskapp
+wrangler secret put DEMO_EMPLOYEE_ID --name myworkdeskapp
+wrangler secret put DEMO_PASSWORD    --name myworkdeskapp
+wrangler secret put ADMIN_ORG_ID     --name myworkdeskapp
+wrangler secret put ADMIN_PASSWORD   --name myworkdeskapp</pre>
+                  <div style="font-size:11px;color:var(--sa-text-muted);margin-top:8px">Enter each value when prompted, then redeploy the project. <code style="font-size:10px">ADMIN_EMPLOYEE_ID</code> is optional.</div>
                 </div>
               </div>
 
@@ -2173,23 +2207,35 @@ wrangler secret put SA_PASSWORD     --name myworkdeskapp</pre>
         var box = document.getElementById('secretsStatusBox');
         if (box) box.style.display = 'block';
 
-        var keys = ['SA_USERNAME', 'SA_SECURITY_KEY', 'SA_PASSWORD'];
-        keys.forEach(function (key) {
+        var allKeys = [
+          'SA_USERNAME', 'SA_SECURITY_KEY', 'SA_PASSWORD',
+          'DEMO_ORG_ID', 'DEMO_EMPLOYEE_ID', 'DEMO_PASSWORD',
+          'ADMIN_ORG_ID', 'ADMIN_EMPLOYEE_ID', 'ADMIN_PASSWORD',
+        ];
+        // ADMIN_EMPLOYEE_ID is optional — don't count it as a failure
+        var optionalKeys = ['ADMIN_EMPLOYEE_ID'];
+
+        allKeys.forEach(function (key) {
           var el = document.getElementById('secretStatus_' + key);
           if (!el) return;
           var isSet = data.ok && data.secrets && data.secrets[key];
-          el.className = 'badge ' + (isSet ? 'active' : 'inactive');
-          el.innerHTML = '<span class="dot"></span>' + (isSet ? 'Configured' : 'Not set');
+          var isOptional = optionalKeys.indexOf(key) !== -1;
+          el.className = 'badge ' + (isSet ? 'active' : (isOptional ? '' : 'inactive'));
+          el.innerHTML = '<span class="dot"></span>' + (isSet ? 'Configured' : (isOptional ? 'Not set (optional)' : 'Not set'));
         });
 
         var summary = document.getElementById('secretsStatusSummary');
         var fixCmds = document.getElementById('secretsFixCommands');
         if (summary) {
           if (data.ok && data.allConfigured) {
-            summary.innerHTML = '<span style="color:var(--sa-green)">✓ All three secrets are configured correctly.</span>';
+            summary.innerHTML = '<span style="color:var(--sa-green)">✓ All required variables are configured correctly.</span>';
             if (fixCmds) fixCmds.style.display = 'none';
           } else if (data.ok) {
-            summary.innerHTML = '<span style="color:var(--sa-red)">✗ One or more secrets are missing. Set them via <code style="font-size:11px">wrangler secret put</code> and redeploy.</span>';
+            var missing = [];
+            if (!data.saConfigured)   missing.push('super admin (SA_*)');
+            if (!data.demoConfigured) missing.push('demo/employee (DEMO_*)');
+            if (!data.adminConfigured) missing.push('admin (ADMIN_*)');
+            summary.innerHTML = '<span style="color:var(--sa-red)">✗ Missing variables for: ' + missing.join(', ') + '. Set them via <code style="font-size:11px">wrangler secret put</code> or Cloudflare Pages settings, then redeploy.</span>';
             if (fixCmds) fixCmds.style.display = 'block';
           } else {
             summary.innerHTML = '<span style="color:var(--sa-text-muted)">' + (data.message || 'Could not retrieve configuration status.') + '</span>';
