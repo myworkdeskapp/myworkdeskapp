@@ -61,31 +61,21 @@ export async function onRequest(context) {
     const demoOrgId      = (env.DEMO_ORG_ID      || 'DEMO').trim();
     const demoEmployeeId = (env.DEMO_EMPLOYEE_ID  || 'EMP001').trim();
     const hasDemoPasswordOverride = typeof env.DEMO_PASSWORD === 'string' && env.DEMO_PASSWORD.trim().length > 0;
-    const demoPasswords = hasDemoPasswordOverride
-      ? [env.DEMO_PASSWORD.trim()]
-      : ['WorkDesk@2025', 'demo123', 'demo1234'];
+    const demoPassword   = (env.DEMO_PASSWORD || 'WorkDesk@2025').trim();
 
     // Admin credentials (optional). If the ADMIN_* env vars are set they take
     // precedence for the 'admin' role; otherwise the admin and employee share
     // the same org-ID and password but admin skips the per-employee-ID check
     // so that any ADMIN-/ADM-prefixed employee ID is accepted.
     const adminOrgId      = (env.ADMIN_ORG_ID      || demoOrgId).trim();
-    const hasAdminPasswordOverride = typeof env.ADMIN_PASSWORD === 'string' && env.ADMIN_PASSWORD.trim().length > 0;
-    const adminPasswords  = hasAdminPasswordOverride
-      ? [env.ADMIN_PASSWORD.trim()]
-      : demoPasswords;
+    const adminPassword   = (env.ADMIN_PASSWORD || demoPassword).trim();
     const adminEmployeeId = (env.ADMIN_EMPLOYEE_ID  || '').trim();
-
-    async function safeEqualAny(input, candidates) {
-      const checks = await Promise.all(candidates.map((value) => safeEqual(input, value)));
-      return checks.some(Boolean);
-    }
 
     let valid = false;
     if (role === 'admin') {
       const [orgOk, passOk] = await Promise.all([
         safeEqual(orgId, adminOrgId),
-        safeEqualAny(password, adminPasswords),
+        safeEqual(password, adminPassword),
       ]);
       // Employee-ID check is optional: only enforce if ADMIN_EMPLOYEE_ID is set
       const empOk = adminEmployeeId ? await safeEqual(employeeId, adminEmployeeId) : true;
@@ -94,7 +84,7 @@ export async function onRequest(context) {
       const [orgOk, empOk, passOk] = await Promise.all([
         safeEqual(orgId, demoOrgId),
         safeEqual(employeeId, demoEmployeeId),
-        safeEqualAny(password, demoPasswords),
+        safeEqual(password, demoPassword),
       ]);
       valid = orgOk && empOk && passOk;
     }
