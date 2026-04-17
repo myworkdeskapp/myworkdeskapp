@@ -201,56 +201,6 @@
 
     .btn-submit.loading .h-spinner { display: block; }
 
-    /* ── OR separator ─────── */
-    .or-sep {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      font-size: 12px;
-      font-weight: 500;
-      color: #D1D5DB;
-    }
-
-    .or-sep::before,
-    .or-sep::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: #E5E7EB;
-    }
-
-    /* ── SSO buttons ─────── */
-    .sso-row {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-
-    .sso-btn {
-      flex: 1;
-      height: 48px;
-      background: #fff;
-      border: 1.5px solid #E5E7EB;
-      border-radius: 14px;
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 500;
-      color: #374151;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-    }
-
-    .sso-btn:hover {
-      background: #F9FAFB;
-      border-color: #C9CDD4;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    }
-
     /* ── Bottom links row ─────── */
     .bottom-links {
       margin-top: auto;
@@ -417,42 +367,6 @@
     @media (max-width: 900px) and (min-width: 721px) {
       .form-panel { padding: 36px 36px 28px; }
       .float-card-cal { display: none; }
-    }
-
-    /* ── Daily quote card ─────── */
-    .daily-quote {
-      background: rgba(235, 244, 241, 0.92);
-      border: 1px solid rgba(90, 143, 123, 0.25);
-      border-radius: 8px;
-      padding: 10px 14px;
-      margin-bottom: 20px;
-      font-size: 12px;
-      color: #3a6b5e;
-      line-height: 1.6;
-    }
-
-    .daily-quote .quote-label {
-      display: block;
-      font-size: 10px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--primary);
-      margin-bottom: 4px;
-    }
-
-    .daily-quote blockquote {
-      margin: 0;
-      font-size: 12.5px;
-      color: #2f5f53;
-    }
-
-    .daily-quote cite {
-      display: block;
-      margin-top: 4px;
-      font-style: normal;
-      font-size: 11px;
-      color: #3a6b5e;
     }
 
     /* ── Role hint (below Employee ID in step 1) ─────── */
@@ -643,44 +557,11 @@
             <span class="field-error" id="passwordError">Required</span>
           </div>
 
-          <section class="daily-quote" aria-live="polite">
-            <span class="quote-label">Daily Quote</span>
-            <blockquote>
-              <span id="dailyQuoteText"></span>
-              <cite id="dailyQuoteAuthor"></cite>
-            </blockquote>
-          </section>
-
           <!-- Sign In button -->
           <button type="submit" class="btn-submit" id="loginBtn">
             <span class="btn-label">Sign In</span>
             <span class="h-spinner" aria-hidden="true"></span>
           </button>
-
-          <!-- OR separator -->
-          <div class="or-sep">OR</div>
-
-          <!-- SSO buttons -->
-          <div class="sso-row">
-            <button type="button" class="sso-btn" id="googleBtn" aria-label="Sign in with Google">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-              Google
-            </button>
-            <button type="button" class="sso-btn" id="msBtn" aria-label="Sign in with Microsoft">
-              <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path d="M11.4 2H2v9.4h9.4V2z" fill="#F25022"/>
-                <path d="M22 2h-9.4v9.4H22V2z" fill="#7FBA00"/>
-                <path d="M11.4 12.6H2V22h9.4v-9.4z" fill="#00A4EF"/>
-                <path d="M22 12.6h-9.4V22H22v-9.4z" fill="#FFB900"/>
-              </svg>
-              Microsoft
-            </button>
-          </div>
 
         </div>
 
@@ -743,50 +624,6 @@
           '<span class="fc-cal-num">' + d.getDate() + '</span>';
         container.appendChild(div);
       }
-    }());
-
-    // ── Daily quote (30 quotes rotating each day) ─────────────────────────────
-    (function () {
-      var quotes = [
-        { text: 'Success is the sum of small efforts, repeated day in and day out.', author: 'Robert Collier' },
-        { text: 'The future depends on what you do today.', author: 'Mahatma Gandhi' },
-        { text: 'Quality means doing it right when no one is looking.', author: 'Henry Ford' },
-        { text: 'Discipline is choosing between what you want now and what you want most.', author: 'Abraham Lincoln' },
-        { text: 'Well done is better than well said.', author: 'Benjamin Franklin' },
-        { text: 'Do not wait. The time will never be just right.', author: 'Napoleon Hill' },
-        { text: 'Great things are done by a series of small things brought together.', author: 'Vincent van Gogh' },
-        { text: 'Action is the foundational key to all success.', author: 'Pablo Picasso' },
-        { text: 'Either you run the day, or the day runs you.', author: 'Jim Rohn' },
-        { text: 'Small daily improvements are the key to staggering long-term results.', author: 'Robin Sharma' },
-        { text: 'Dream big. Start small. Act now.', author: 'Robin Sharma' },
-        { text: 'Perseverance is not a long race; it is many short races one after the other.', author: 'Walter Elliot' },
-        { text: 'The secret of getting ahead is getting started.', author: 'Mark Twain' },
-        { text: 'The best way out is always through.', author: 'Robert Frost' },
-        { text: 'What we do repeatedly becomes our excellence.', author: 'Will Durant' },
-        { text: 'Simplicity is the ultimate sophistication.', author: 'Leonardo da Vinci' },
-        { text: 'Focus on being productive instead of busy.', author: 'Tim Ferriss' },
-        { text: 'You do not have to be great to start, but you have to start to be great.', author: 'Zig Ziglar' },
-        { text: 'Start where you are. Use what you have. Do what you can.', author: 'Arthur Ashe' },
-        { text: 'If you can dream it, you can do it.', author: 'Walt Disney' },
-        { text: 'Progress is impossible without change.', author: 'George Bernard Shaw' },
-        { text: 'Do one thing every day that moves you forward.', author: 'Unknown' },
-        { text: 'Your habits shape your future.', author: 'Jack Canfield' },
-        { text: 'Make each day your masterpiece.', author: 'John Wooden' },
-        { text: 'Courage is resistance to fear, mastery of fear, not absence of fear.', author: 'Mark Twain' },
-        { text: 'Success usually comes to those who are too busy to be looking for it.', author: 'Henry David Thoreau' },
-        { text: 'Do the hard jobs first. The easy jobs will take care of themselves.', author: 'Dale Carnegie' },
-        { text: 'Where focus goes, energy flows.', author: 'Tony Robbins' },
-        { text: 'The way to get started is to quit talking and begin doing.', author: 'Walt Disney' },
-        { text: 'Do not watch the clock; do what it does. Keep going.', author: 'Sam Levenson' }
-      ];
-      var quoteTextEl = document.getElementById('dailyQuoteText');
-      var quoteAuthorEl = document.getElementById('dailyQuoteAuthor');
-      if (!quoteTextEl || !quoteAuthorEl || !quotes.length) return;
-
-      var dayNumber = Math.floor(Date.now() / 86400000);
-      var quote = quotes[((dayNumber % quotes.length) + quotes.length) % quotes.length];
-      quoteTextEl.textContent = '"' + quote.text + '"';
-      quoteAuthorEl.textContent = '— ' + quote.author;
     }());
 
     // ── Toast helper ─────────────────────────────────────────────────────────
@@ -958,14 +795,6 @@
         return;
       }
       showToast('Password reset request submitted for Employee ID: ' + empId + '. Contact your HR Team.', false);
-    });
-
-    // ── Social SSO buttons ────────────────────────────────────────────────────
-    document.getElementById('googleBtn').addEventListener('click', function () {
-      showToast('Google SSO is configured via your Cloudflare Access policy.', false);
-    });
-    document.getElementById('msBtn').addEventListener('click', function () {
-      showToast('Microsoft SSO is configured via your Cloudflare Access policy.', false);
     });
 
     // ── Login form submit ─────────────────────────────────────────────────────
